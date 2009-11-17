@@ -13,8 +13,11 @@ class Contract(models.Model):
     start_date = models.DateField('starting date')
     end_date = models.DateField('ending date')
     customer = models.ForeignKey(Customer)
+    hosts = models.ManyToManyField('Host',
+            symmetrical=false,
+            related_name='%(class)_h_H')
 
-    def __unicode__(self):
+    def __str__(self):
        return " (" + str(self.start_date) + " -> " + str(self.end_date) + ")"
 
 class Host(models.Model):
@@ -24,21 +27,17 @@ class Host(models.Model):
     release = models.CharField(max_length=100)
     hash = models.CharField(max_length=32)
 
-    def __unicode__(self):
+    def __str__(self):
        return self.name
 
 class Package(models.Model):
     name = models.CharField(max_length=250)
     arch = models.CharField(max_length=50)
-    ver = models.CharField(max_length=50)
-    rel = models.CharField(max_length=50)
+    version = models.CharField(max_length=50)
+    release = models.CharField(max_length=50)
 
-    def __unicode__(self):
+    def __str__(self):
        return self.name + '-' + self.arch + '.' + self.ver + '.' + self.rel
- 
-class ServerContracts(models.Model):
-    contract = models.ForeignKey(Contract)
-    server = models.ForeignKey(Host) 
 
 class ServerPackages(models.Model):
     package = models.ForeignKey(Package)
