@@ -14,8 +14,8 @@ class Contract(models.Model):
     end_date = models.DateField('ending date')
     customer = models.ForeignKey(Customer)
     hosts = models.ManyToManyField('Host',
-            symmetrical=false,
-            related_name='%(class)_h_H')
+            symmetrical=False,
+            related_name='C_h_H')
 
     def __str__(self):
        return " (" + str(self.start_date) + " -> " + str(self.end_date) + ")"
