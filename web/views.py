@@ -4,3 +4,6 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from banquise.web.models import Customer, Host, Package, Contract
 
+
+def index(request):
+    return render_to_response('index.html')

@@ -19,6 +19,7 @@ urlpatterns = patterns('banquise.web.views',
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    (r'^$', 'django.views.generic.list_detail.object_list', info_dict),
+    #(r'^$', 'django.views.generic.list_detail.object_list', info_dict),
+    (r'^$', 'index'),
 
 )
