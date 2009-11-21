@@ -31,10 +31,13 @@ class Host(models.Model):
        return self.name
 
 class Package(models.Model):
-    name = models.CharField(max_length=250)
-    arch = models.CharField(max_length=50)
+    name = models.CharField(max_length=80)
+    arch = models.CharField(max_length=10)
     version = models.CharField(max_length=50)
     release = models.CharField(max_length=50)
+
+    class Meta:
+        unique_together = ('name', 'arch', 'version', 'release',)
 
     def __str__(self):
        return self.name + '-' + self.arch + '.' + self.ver + '.' + self.rel
