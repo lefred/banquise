@@ -16,11 +16,15 @@
 <div id="left">
 {% block left_content %}
 <h1>Contracts</h1>
-<ul>
-{% for cont in contracts %}
-<li><strong>{{cont.customer.name}}:</strong> valid until {{cont.end_date}} <img src='/media/images/icons/host.png' height='16'> {{ cont.hosts.count }}</li>
+<table>
+    {% for cont in contracts %}
+    <tr>
+        <td><strong>{{cont.customer.name}}:</strong></td>
+        <td>valid until {{cont.end_date}}</td> 
+        <td><img src='/media/images/icons/host.png' height='16'> {{ cont.hosts.count }}</td>
+    </tr>
 {% endfor %}
-</ul>
+</table>
 {% endblock %}
 </div>
 <div id="content">
