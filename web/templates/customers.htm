@@ -1,0 +1,8 @@
+{% extends "index.html" %}
+{% block content %}
+<ul>
+{% for cust in customers %}
+    <li>{{ cust.name }}</li>
+{% endfor %}
+</ul>
+{% endblock %}

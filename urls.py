@@ -17,7 +17,8 @@ urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
     (r'^web/', include('banquise.web.urls')),
     (r'^media/(?P<path>.*)$', 'django.views.static.serve',
-        {'document_root': '/home/fred/workspace/banquise/web/media', 'show_indexes': True}),
+        {'document_root': '/home/sejo/playground/banquise/web/media', 'show_indexes': True}),
 
-    (r'^$', include('banquise.web.urls')),
+    (r'^$', 'banquise.web.views.index'),
+
 )

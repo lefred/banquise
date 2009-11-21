@@ -1,0 +1,17 @@
+{% extends "index.html" %}
+{% block content %}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>IP</th>
+        <th>Public IP</th>
+    </tr>
+    {% for host in hosts %}
+    <tr>
+        <td>{{ host.name }}</td>
+        <td>{{ host.ip }} </td>
+        <td>{{ host.public_ip }} </td>
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}
