@@ -40,7 +40,7 @@ class Package(models.Model):
         unique_together = ('name', 'arch', 'version', 'release',)
 
     def __str__(self):
-       return self.name + '-' + self.arch + '.' + self.ver + '.' + self.rel
+       return self.name + '-' + self.arch + '.' + self.version + '.' + self.rel
 
 class ServerPackages(models.Model):
     package = models.ForeignKey(Package)
