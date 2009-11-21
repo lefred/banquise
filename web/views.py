@@ -12,7 +12,7 @@ def _get_default_context(dict_in):
     :rtype: :class:`dict`
     """
 
-    contracts = Contract.objects.all()
+    contracts = Contract.objects.all().order_by('end_date')
     d = {'contracts':contracts}
  
     if dict_in:
