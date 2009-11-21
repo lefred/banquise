@@ -20,7 +20,6 @@ a:hover {
 }
 
 #content {
-	height:400px;
 	background-color:#FFFFFF;
 }
 
@@ -42,6 +41,7 @@ a:hover {
 	width:250px;
 	height:50px;
 	background-color:#619ff5;
+    color: white;
 }
 
 #header {
