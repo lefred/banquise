@@ -36,16 +36,18 @@ a:hover {
 	background-color:#6d90c2;
 }
 
-#left ul {
+#left table {
 		list-style: none;
 		padding: 0;
-		margin: 15;
+		margin: 5;
 	    width: 90%;
+	    border-collapse:collapse;
 }
 
-#left li {
-		border: 2px solid #ece2e2;
+#left td {
+		border: 0px solid #ece2e2;
 	    background-color:#ece2e2;
+		border-bottom: 2px solid #6d90c2;
 	    font-size: 10px;
 }
 
