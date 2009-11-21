@@ -36,6 +36,19 @@ a:hover {
 	background-color:#6d90c2;
 }
 
+#left ul {
+		list-style: none;
+		padding: 0;
+		margin: 15;
+	    width: 90%;
+}
+
+#left li {
+		border: 2px solid #ece2e2;
+	    background-color:#ece2e2;
+	    font-size: 10px;
+}
+
 #right {
 	float:right;
 	width:250px;
