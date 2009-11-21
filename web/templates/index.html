@@ -7,13 +7,22 @@
 <div id="top"><img src='/media/images/banquise.png'>
 <div id="header">
 <ul>
-	<li id="selected"><a href="#">customers</a></li>
-	<li><a href="#">hosts</a></li>
-	<li><a href="#">packages</a></li>
+	<li id="selected"><a href="/web/list/customers/">customers</a></li>
+	<li><a href="/web/list/hosts/">hosts</a></li>
+	<li><a href="/web/list/packages/">packages</a></li>
 </ul>
 </div>
 </div>
-<div id="left"></div>
+<div id="left">
+{% block left_content %}
+<h1>Contracts</h1>
+<ul>
+{% for cont in contracts %}
+<li>{{cont.customer.name}}: {{ cont.start_date }} -&gt; {{cont.end_date}}</li>
+{% endfor %}
+</ul>
+{% endblock %}
+</div>
 <div id="content">
 <div id="right"></div>
 {% block content %} 

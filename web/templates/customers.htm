@@ -1,6 +1,8 @@
 {% extends "index.html" %}
 {% block content %}
-{% for cust in c %}
-{{ cust.name }} </br>
+<ul>
+{% for cust in customers %}
+    <li>{{ cust.name }}</li>
 {% endfor %}
+</ul>
 {% endblock %}
