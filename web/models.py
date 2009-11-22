@@ -13,6 +13,7 @@ class Contract(models.Model):
     start_date = models.DateField('starting date')
     end_date = models.DateField('ending date')
     customer = models.ForeignKey(Customer)
+    license = models.CharField(max_length=32)
     hosts = models.ManyToManyField('Host',
             symmetrical=False,
             related_name='C_h_H')
