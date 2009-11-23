@@ -73,9 +73,20 @@ def details_customer(request, customer_id):
     :type request: :class:`django.http.Request`
     """
     customer = get_object_or_404(Customer,pk=customer_id)
-
+    contracts = customer.contract_set.all()
+    # find the numbers of hosts for this customer
+    s = set()    
+    for cont in contracts:
+       for host in cont.hosts.all(): 
+         s.add(host)
+       
+    valid_contracts = customer.contract_set.filter(end_date__gte=datetime.date.today())    
+    old_contracts = customer.contract_set.filter(end_date__lte=datetime.date.today())    
+    
     t = loader.get_template('customerDetails.html')
-    scope = _get_default_context({'customer':customer,})
+    scope = _get_default_context({'customer':customer,'tot_hosts':len(s),
+                                  'valid_contracts':valid_contracts,
+                                  'old_contracts':old_contracts,})
     c = RequestContext(request, scope)
 
     return HttpResponse(t.render(c))
