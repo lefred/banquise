@@ -35,7 +35,10 @@ def list_customers(request):
     customers = Customer.objects.all()
 
     t = loader.get_template('customers.htm')
-    scope = _get_default_context({'customers':customers,})
+    d = customers.contract_set.latest().end_date - datetime.date.today()
+    
+    scope = _get_default_context({'customers':customers,'daysleft':d,})
+
     c = RequestContext(request, scope)
 
     return HttpResponse(t.render(c))

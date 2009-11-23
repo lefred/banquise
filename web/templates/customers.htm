@@ -1,8 +1,10 @@
 {% extends "index.html" %}
 {% block content %}
-<ul>
+<div id="customers">
+<table>
 {% for cust in customers %}
-    <li>{{ cust.name }}</li>
+    <tr><td>{{ cust.name }}</td><td>{{ cust.contract_set.latest.end_date }} ({{ cust.daysleft }})</td><td width='10%' align='center'><img src='/media/images/icons/details.png'></td></tr>
 {% endfor %}
-</ul>
+</table>
+</div>
 {% endblock %}
