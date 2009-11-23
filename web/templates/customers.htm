@@ -3,7 +3,7 @@
 <div id="customers">
 <table>
 {% for cust in customers %}
-    <tr><td>{{ cust.name }}</td><td>{{ cust.contract_set.latest.end_date }} ({{ cust.daysleft }})</td><td width='10%' align='center'><img src='/media/images/icons/details.png'></td></tr>
+<tr><td>{{ cust.name }}</td><td>{{ cust.end_date }} ({{ cust.days_left }})</td><td width='10%' align='center'><img src='/media/images/icons/details.png'></td></tr>
 {% endfor %}
 </table>
 </div>
