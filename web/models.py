@@ -21,6 +21,9 @@ class Contract(models.Model):
     def __str__(self):
        return " (" + str(self.start_date) + " -> " + str(self.end_date) + ")"
 
+    class Meta:
+        get_latest_by = 'end_date'
+
 class Host(models.Model):
     name = models.CharField(max_length=250)
     ip = models.CharField(max_length=15)
