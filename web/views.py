@@ -73,9 +73,9 @@ def details_customer(request, customer_id):
     :type request: :class:`django.http.Request`
     """
     customer = get_object_or_404(Customer,pk=customer_id)
-    
+
     t = loader.get_template('customerDetails.html')
     scope = _get_default_context({'customer':customer,})
     c = RequestContext(request, scope)
-    
-    return HttpResponse(t.render(c)) 
+
+    return HttpResponse(t.render(c))
