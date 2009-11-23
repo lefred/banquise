@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
@@ -33,11 +35,16 @@ def list_customers(request):
     :type request: :class:`django.http.Request`
     """
     customers = Customer.objects.all()
+    c_list = list()
+    for c in customers:
+        c_list.append({
+            'name':c.name,
+            'end_date': c.contract_set.latest().end_date,
+            'days_left': (c.contract_set.latest().end_date - datetime.date.today()).days
+            })
 
     t = loader.get_template('customers.htm')
-    d = customers.contract_set.latest().end_date - datetime.date.today()
-    
-    scope = _get_default_context({'customers':customers,'daysleft':d,})
+    scope = _get_default_context({'customers':c_list,})
 
     c = RequestContext(request, scope)
 
