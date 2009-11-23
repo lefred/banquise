@@ -40,7 +40,8 @@ def list_customers(request):
         c_list.append({
             'name':c.name,
             'end_date': c.contract_set.latest().end_date,
-            'days_left': (c.contract_set.latest().end_date - datetime.date.today()).days
+            'days_left': (c.contract_set.latest().end_date - datetime.date.today()).days,
+            'id': c.pk
             })
 
     t = loader.get_template('customers.htm')
@@ -65,3 +66,16 @@ def list_hosts(request):
 
     return HttpResponse(t.render(c))
 
+def details_customer(request, customer_id):
+    """Return a :class:`django.db.models.query.QuerySet` of :class:`Customer` objects
+
+    :param request: :class:`django.http.HttpRequest` given by the framework
+    :type request: :class:`django.http.Request`
+    """
+    customer = get_object_or_404(Customer,pk=customer_id)
+    
+    t = loader.get_template('customerDetails.html')
+    scope = _get_default_context({'customer':customer,})
+    c = RequestContext(request, scope)
+    
+    return HttpResponse(t.render(c)) 

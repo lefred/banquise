@@ -21,6 +21,7 @@ urlpatterns = patterns('banquise.web.views',
     # Uncomment the next line to enable the admin:
     #(r'^$', 'django.views.generic.list_detail.object_list', info_dict),
     (r'^list/customers/$', 'list_customers'),
+    (r'^list/customers/$', 'list_customers'),
     (r'^list/hosts/$', 'list_hosts'),
-
+    (r'^customer/(?P<customer_id>\d+)/$','details_customer'),
 )
