@@ -12,7 +12,7 @@ class Customer(models.Model):
 class Contract(models.Model):
     start_date = models.DateField('starting date')
     end_date = models.DateField('ending date')
-    days_left = lambda x:  (end_date - datetime.date.today()).days
+    days_left = lambda x:  (x.end_date - datetime.date.today()).days
     customer = models.ForeignKey(Customer)
     license = models.CharField(max_length=32)
     hosts = models.ManyToManyField('Host',

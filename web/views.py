@@ -35,17 +35,9 @@ def list_customers(request):
     :type request: :class:`django.http.Request`
     """
     customers = Customer.objects.all()
-    c_list = list()
-    for c in customers:
-        c_list.append({
-            'name':c.name,
-            'end_date': c.contract_set.latest().end_date,
-            'days_left': c.contract_set.latest().days_left,
-            'id': c.pk
-            })
 
     t = loader.get_template('customers.htm')
-    scope = _get_default_context({'customers':c_list,})
+    scope = _get_default_context({'customers':customers,})
 
     c = RequestContext(request, scope)
 
