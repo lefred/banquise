@@ -40,7 +40,7 @@ def list_customers(request):
         c_list.append({
             'name':c.name,
             'end_date': c.contract_set.latest().end_date,
-            'days_left': (c.contract_set.latest().end_date - datetime.date.today()).days,
+            'days_left': c.contract_set.latest().days_left,
             'id': c.pk
             })
 
@@ -75,13 +75,14 @@ def details_customer(request, customer_id):
     customer = get_object_or_404(Customer,pk=customer_id)
     contracts = customer.contract_set.all()
     # find the numbers of hosts for this customer
-    s = set()    
+    s = set()
     for cont in contracts:
-       for host in cont.hosts.all(): 
+        for host in cont.hosts.all():
          s.add(host)
-       
-    valid_contracts = customer.contract_set.filter(end_date__gte=datetime.date.today())    
-    old_contracts = customer.contract_set.filter(end_date__lt=datetime.date.today())    
+
+    valid_contracts = contracts.filter(end_date__gte=datetime.date.today())
+    old_contracts = contracts.filter(end_date__lt=datetime.date.today())
+
 
     t = loader.get_template('customerDetails.html')
     scope = _get_default_context({'customer':customer,'tot_hosts':len(s),
