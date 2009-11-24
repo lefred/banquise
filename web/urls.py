@@ -24,5 +24,5 @@ urlpatterns = patterns('banquise.web.views',
     (r'^list/customers/$', 'list_customers'),
     (r'^list/hosts/$', 'list_hosts'),
     (r'^customer/(?P<customer_id>\d+)/$','details_customer'),
-    (r'^json/setup(?P<license>.*)/$','call_setup'),
+    (r'^json/setup(?P<data>.*)/$','call_setup'),
 )

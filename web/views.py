@@ -90,5 +90,6 @@ def details_customer(request, customer_id):
 # REST methods
 
 def call_setup(request, data):
-   json_value = serializers.serialize('json','fred')
+   contract = Contract.objects.filter(license='123') 
+   json_value = serializers.serialize('json',contract)
    return HttpResponse(json_value, mimetype="application/javascript") 
