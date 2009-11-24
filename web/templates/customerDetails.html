@@ -5,6 +5,7 @@
 <p>
 <div id=contracts>
 {% if valid_contracts %}
+<div id=validcontracts>
 <h3>Valid contracts :</h3>
 <table>
     <tr>
@@ -20,9 +21,11 @@
     </tr>
     {% endfor %}
 </table>
+</div>
 {% endif %}
 {% if old_contracts %}
-<h3>Old contracts :</h3>
+<div id=expiredcontracts>
+<h3>Expired contracts :</h3>
 <table>
     <tr>
         <th>From</th>
@@ -37,6 +40,7 @@
     </tr>
     {% endfor %}
 </table>
+</div>
 {% endif %}
 </div>
 {% endblock %}

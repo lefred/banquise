@@ -92,6 +92,14 @@ a:hover {
 		border-bottom: 1px dashed #6d90c2;
 }
 
+#expiredcontracts table {
+	    border-collapse:collapse;
+	    width: 30%;
+	    padding: 10;
+	    margin: 10;
+		border: 2px solid red;
+}
+
 #right {
 	float:right;
 	width:250px;
