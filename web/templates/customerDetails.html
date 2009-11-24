@@ -21,7 +21,7 @@
           {% if (cont.end_date-datetime.date.today()).days < 10 %}
             <img src='/media/images/icons/expiring.png' height='16'>
           {% endif %}
-        </td> 
+        </td>
         <td><img src='/media/images/icons/host.png' height='16'> {{ cont.hosts.count }}</td>
     </tr>
     {% endfor %}
