@@ -81,7 +81,7 @@ def details_customer(request, customer_id):
          s.add(host)
        
     valid_contracts = customer.contract_set.filter(end_date__gte=datetime.date.today())    
-    old_contracts = customer.contract_set.filter(end_date__lte=datetime.date.today())    
+    old_contracts = customer.contract_set.filter(end_date__lt=datetime.date.today())    
     
     t = loader.get_template('customerDetails.html')
     scope = _get_default_context({'customer':customer,'tot_hosts':len(s),

@@ -3,6 +3,7 @@
 <h2>{{ customer.name }} <img src='/media/images/icons/contract.png'>{{ customer.contract_set.all.count }}
 <img src='/media/images/icons/host.png'> {{ tot_hosts }}</h2> 
 <p>
+<div id=contracts>
 {% if valid_contracts %}
 <h3>Valid contracts :</h3>
 <table>
@@ -15,7 +16,7 @@
     <tr>
         <td>{{cont.start_date}}</td>
         <td>{{cont.end_date}}</td> 
-        <td align='center'><img src='/media/images/icons/host.png' height='16'> {{ cont.hosts.count }}</td>
+        <td><img src='/media/images/icons/host.png' height='16'> {{ cont.hosts.count }}</td>
     </tr>
     {% endfor %}
 </table>
@@ -32,11 +33,10 @@
     <tr>
         <td>{{cont.start_date}}</td>
         <td>{{cont.end_date}}</td> 
-        <td align='center'><img src='/media/images/icons/host.png' height='16'> {{ cont.hosts.count }}</td>
+        <td><img src='/media/images/icons/host.png' height='16'> {{ cont.hosts.count }}</td>
     </tr>
     {% endfor %}
 </table>
 {% endif %}
-<div id="customers">
 </div>
 {% endblock %}
