@@ -5,6 +5,9 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.template import RequestContext,loader
 from banquise.web.models import Customer, Host, Package, Contract
+from django.utils import simplejson
+from django.core import serializers
+
 
 def _get_default_context(dict_in):
     """Returns a :class:`dict` containing all the needed variables for the context
@@ -83,3 +86,9 @@ def details_customer(request, customer_id):
     c = RequestContext(request, scope)
 
     return HttpResponse(t.render(c))
+
+# REST methods
+
+def call_setup(request, data):
+   json_value = serializers.serialize('json','fred')
+   return HttpResponse(json_value, mimetype="application/javascript") 
