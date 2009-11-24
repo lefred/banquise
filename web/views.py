@@ -14,7 +14,7 @@ def _get_default_context(dict_in):
     :rtype: :class:`dict`
     """
 
-    contracts = Contract.objects.all().order_by('end_date')
+    contracts = Contract.objects.filter(end_date__gte=datetime.date.today()).order_by('end_date')
     d = {'contracts':contracts}
  
     if dict_in:
