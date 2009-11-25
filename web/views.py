@@ -98,5 +98,5 @@ def call_setup(request):
    host.save()
    contract.hosts.add(host)   
    contract.save()
-   json_value = serializers.serialize('json',contract)
+   json_value = serializers.serialize('json',host)
    return HttpResponse(json_value, mimetype="application/javascript") 
