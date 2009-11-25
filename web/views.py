@@ -91,6 +91,7 @@ def details_customer(request, customer_id):
 
 def call_setup(request):
    print request.POST 
-   contract = Contract.objects.filter(license='123') 
+   license_tosearch = request.POST[u'license'] 
+   contract = Contract.objects.filter(license=license_tosearch) 
    json_value = serializers.serialize('json',contract)
    return HttpResponse(json_value, mimetype="application/javascript") 
