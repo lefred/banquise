@@ -1,4 +1,5 @@
 import datetime
+import uuid
 
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
@@ -94,9 +95,16 @@ def call_setup(request):
    # search it there is a contract on which we can attach the host
    license_tosearch = request.POST[u'license'] 
    contract = Contract.objects.get(license=license_tosearch) 
-   host = Host(name=request.POST[u'hostname'])
+   try: 
+       # would be nice to find the contract and the customer linked to this host
+       host = Host.objects.get(name=request.POST[u'hostname'])
+   except:     
+       host = Host(name=request.POST[u'hostname'])
+   # generate a hash to identify the host
+   host.hash = str(uuid.uuid4())[0:8]
    host.save()
    contract.hosts.add(host)   
    contract.save()
-   json_value = serializers.serialize('json',host)
-   return HttpResponse(json_value, mimetype="application/javascript") 
+   #json_value = serializers.serialize('json',contract)
+   #return HttpResponse(json_value, mimetype="application/javascript") 
+   return HttpResponse(host.hash)
