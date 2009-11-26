@@ -102,6 +102,7 @@ def call_setup(request):
        host = Host(name=request.POST[u'hostname'])
    # generate a hash to identify the host
    host.hash = str(uuid.uuid4())[0:8]
+   host.release = request.POST[u'release']
    host.save()
    contract.hosts.add(host)   
    contract.save()
