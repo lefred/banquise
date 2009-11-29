@@ -89,15 +89,48 @@ def details_customer(request, customer_id):
     return HttpResponse(t.render(c))
 
 # REST methods
-
+def call_test(request):
+   uuid = request.POST[u'uuid']
+   try:
+       host = Host.objects.get(hash=uuid)
+       contract_list = Contract.objects.filter(hosts=host,end_date__gte=datetime.date.today())
+       if contract_list:
+           #this is ok, the host exists and has a valid contract
+           return HttpResponse("OK") 
+       else:
+           #this host has no valid contract linked to it
+           return HttpResponse("ERROR2")
+   except:
+           #no host found
+           return HttpResponse("ERROR3")
+                  
+def call_set_release(request):
+   uuid = request.POST[u'uuid']
+   try:
+       host = Host.objects.get(hash=uuid)
+       host.release = request.POST[u'release']
+       host.save()
+       return HttpResponse("OK") 
+   except:     
+       # can set the release
+       return HttpResponse("ERROR4") 
+       
+       
+    
 def call_setup(request):
-   print request.POST 
    # search it there is a contract on which we can attach the host
    license_tosearch = request.POST[u'license'] 
    contract = Contract.objects.get(license=license_tosearch) 
+   customer = Customer.objects.filter(contract=contract)
    try: 
-       # would be nice to find the contract and the customer linked to this host
+       # search if the host exists alreay 
        host = Host.objects.get(name=request.POST[u'hostname'])
+       # is it link to a valid contract already ?
+       contract_list = Contract.objects.filter(customer=customer,hosts=host,end_date__gte=datetime.date.today())
+       if contract_list:
+           print "This host is already linked to a valid contract" 
+           return HttpResponse("ERROR1") 
+       
    except:     
        host = Host(name=request.POST[u'hostname'])
    # generate a hash to identify the host
