@@ -115,8 +115,30 @@ def call_set_release(request):
        # can set the release
        return HttpResponse("ERROR4") 
        
-       
-    
+def call_send_update(request):
+    uuid = request.POST[u'uuid']
+    host = Host.objects.get(hash=uuid)
+    packages = request.POST[u'packages']      
+    for package in packages.split("|"):
+        tab = package.split(",")
+        # find the package
+        try:
+            pack = Package.objects.get(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])
+            # is there a link between the package and the server ?    
+            try:
+                servpack = ServerPackages.objects.get(host=host,package=pack)
+            except:
+                print "we need to create the link with the server"
+                servpack = ServerPackages(package=pack,host=host)
+                #date_available=datetime.date.today())
+                servpack.save()
+        except:
+            pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])
+            pack.save()
+            # create a link with the server
+            
+    return HttpResponse("OK")
+        
 def call_setup(request):
    # search it there is a contract on which we can attach the host
    license_tosearch = request.POST[u'license'] 
