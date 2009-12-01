@@ -151,7 +151,7 @@ def call_send_update(request):
     host = Host.objects.get(hash=uuid)
     packages = request.POST[u'packages']      
     packages_install_list = [] 
-    for package in packages.split("|"):
+    for package in json.loads(packages):
         tab = package.split(",")
         # find the package
         try:
