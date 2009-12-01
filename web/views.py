@@ -1,11 +1,12 @@
 import datetime
 import uuid
+import json
 
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.template import RequestContext,loader
-from banquise.web.models import Customer, Host, Package, Contract
+from banquise.web.models import Customer, Host, Package, ServerPackages, Contract
 from django.utils import simplejson
 from django.core import serializers
 
@@ -114,11 +115,42 @@ def call_set_release(request):
    except:     
        # can set the release
        return HttpResponse("ERROR4") 
-       
+
+def call_packs_done(request):
+    uuid = request.POST[u'uuid']
+    host = Host.objects.get(hash=uuid)
+    packages = request.POST[u'packages'] 
+    for package in json.loads(packages):
+        tab = package.split(",")
+        # find the package
+        try:
+            pack = Package.objects.get(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])
+            # is there a link between the package and the server ?    
+            try:
+                servpack = ServerPackages.objects.get(host=host,package=pack)
+                servpack.date_installed=datetime.date.now()
+                servpack.package_installed=1
+                servpack.save()
+            except (ServerPackages.DoesNotExist):
+                servpack = ServerPackages(host=host,package=pack,
+                                          package_installed=1,
+                                          date_available=datetime.date.now(),
+                                          date_installed=datetime.date.now())
+                servpack.save()
+        except (Package.DoesNotExist):
+            pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])
+            pack.save()
+            # create a link with the server
+            servpack = ServerPackages(host=host,package=pack,date_available=datetime.date.now(),
+                                      package_installed=1,date_installed=datetime.date.now())
+            servpack.save()
+    return HttpResponse("Packages updated")
+        
 def call_send_update(request):
     uuid = request.POST[u'uuid']
     host = Host.objects.get(hash=uuid)
     packages = request.POST[u'packages']      
+    packages_install_list = [] 
     for package in packages.split("|"):
         tab = package.split(",")
         # find the package
@@ -128,20 +160,21 @@ def call_send_update(request):
             try:
                 servpack = ServerPackages.objects.get(host=host,package=pack)
             except (ServerPackages.DoesNotExist):
-                print "we need to create the link with the server"
-                print host
-                print pack
-                servpack = ServerPackages(host=host,package=pack)
-                #date_available=datetime.date.today())
-                print "FRED"
-                print servpack
+                servpack = ServerPackages(host=host,package=pack,date_available=datetime.date.now())
                 servpack.save()
         except (Package.DoesNotExist):
             pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])
             pack.save()
             # create a link with the server
-            
-    return HttpResponse("OK")
+            servpack = ServerPackages(host=host,package=pack,date_available=datetime.date.now())
+            servpack.save()
+        # check if we have to update the package
+        if servpack.to_install:
+            print "needs to be installed : " + str(pack)     
+            packages_install_list.append(package)
+            #packages_install_list.append("|")
+    json_value = json.dumps(packages_install_list)
+    return HttpResponse(json_value, mimetype="application/javascript") 
         
 def call_setup(request):
    # search it there is a contract on which we can attach the host

@@ -51,8 +51,8 @@ class ServerPackages(models.Model):
     package = models.ForeignKey(Package)
     host = models.ForeignKey(Host)
     package_installed = models.BooleanField()
-    date_available = models.DateTimeField()
-    date_installed = models.DateTimeField()
+    date_available = models.DateTimeField(blank=True,null=True)
+    date_installed = models.DateTimeField(blank=True,null=True)
     to_install = models.BooleanField() 
     
     def __str__(self):
