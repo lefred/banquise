@@ -129,8 +129,12 @@ def call_send_update(request):
                 servpack = ServerPackages.objects.get(host=host,package=pack)
             except:
                 print "we need to create the link with the server"
-                servpack = ServerPackages(package=pack,host=host)
+                print host
+                print pack
+                servpack = ServerPackages(host=host,package=pack)
                 #date_available=datetime.date.today())
+                print "FRED"
+                print servpack
                 servpack.save()
         except:
             pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])

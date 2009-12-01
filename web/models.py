@@ -54,3 +54,6 @@ class ServerPackages(models.Model):
     date_available = models.DateTimeField()
     date_installed = models.DateTimeField()
     to_install = models.BooleanField() 
+    
+    def __str__(self):
+       return str(self.package) + '-' + str(self.host)
