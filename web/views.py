@@ -127,7 +127,7 @@ def call_send_update(request):
             # is there a link between the package and the server ?    
             try:
                 servpack = ServerPackages.objects.get(host=host,package=pack)
-            except:
+            except (ServerPackages.DoesNotExist):
                 print "we need to create the link with the server"
                 print host
                 print pack
@@ -136,7 +136,7 @@ def call_send_update(request):
                 print "FRED"
                 print servpack
                 servpack.save()
-        except:
+        except (Package.DoesNotExist):
             pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])
             pack.save()
             # create a link with the server
