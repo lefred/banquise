@@ -1,5 +1,6 @@
 {% extends "index.html" %}
 {% block content %}
+<div id='hosts'>
 <table>
     <tr>
         <th>Name</th>
@@ -12,8 +13,9 @@
         <td>{{ host.name }}</td>
         <td>{{ host.ip }} </td>
         <td>{{ host.public_ip }} </td>
-        <td>{{ host.packages_to_update }} </td>
+        <td align='center'>{{ host.packages_to_update }} </td>
     </tr>
 {% endfor %}
 </table>
+</div>
 {% endblock %}

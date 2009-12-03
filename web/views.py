@@ -54,20 +54,42 @@ def list_customers(request):
 
     return HttpResponse(t.render(c))
 
-def list_hosts(request):
+def list_hosts(request, contract_id=""):
     """Return a :class:`django.db.models.query.QuerySet` of :class:`Host` objects
 
     :param request: :class:`django.http.HttpRequest` given by the framework
     :type request: :class:`django.http.Request`
     """
 
-    hosts = Host.objects.all()
+    if contract_id.isdigit():
+        hosts = Host.objects.filter(C_h_H=contract_id)
+    else:
+        hosts = Host.objects.all()
     contracts = Contract.objects.all()
 
     t = loader.get_template('hosts.htm')
     c = RequestContext(request, _get_default_context({'hosts':hosts,}))
 
     return HttpResponse(t.render(c))
+
+def list_packages(request, host_id=""):
+    """Return a :class:`django.db.models.query.QuerySet` of :class:`Package` objects
+
+    :param request: :class:`django.http.HttpRequest` given by the framework
+    :type request: :class:`django.http.Request`
+    """
+
+    if host_id.isdigit():
+        #this doesn't work yet
+        packages = Package.objects.filter(id=ServerPackages.objects.filter(host=host_id))
+    else:
+        packages = Package.objects.all()
+
+    t = loader.get_template('packages.html')
+    c = RequestContext(request, _get_default_context({'packages':packages,}))
+
+    return HttpResponse(t.render(c))
+
 
 def details_customer(request, customer_id):
     """Return a :class:`django.db.models.query.QuerySet` of :class:`Customer` objects

@@ -100,6 +100,30 @@ a:hover {
 		border: 2px solid #ff5555;
 }
 
+#hosts {
+        margin-left: 350px;
+}
+
+#hosts table {
+	    border-collapse:collapse;
+	    width: 40%;
+	    padding: 10;
+	    margin: 10;
+		border: 2px solid #6d90c2;
+}
+
+#hosts th {
+	    font-size: 14px;
+		text-align: left;
+}
+
+#hosts td {
+	    font-size: 14px;
+		color: #6d90c2;
+		border-bottom: 1px dashed #6d90c2;
+}
+
+
 #right {
 	float:right;
 	width:250px;
