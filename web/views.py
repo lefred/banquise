@@ -81,7 +81,8 @@ def list_packages(request, host_id=""):
 
     if host_id.isdigit():
         #this doesn't work yet
-        packages = Package.objects.filter(id=ServerPackages.objects.filter(host=host_id))
+        host = get_object_or_404(Host,pk=host_id)
+        packages = ServerPackages.objects.filter(host=host)
     else:
         packages = Package.objects.all()
 
