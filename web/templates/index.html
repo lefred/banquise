@@ -22,13 +22,10 @@
         <td><strong>{{cont.customer.name}}:</strong></td>
         <td>valid until {{cont.end_date}}</td> 
         <td><img src='/media/images/icons/host.png' height='16'> {{ cont.hosts.count }} </td>
-        <td> tot : {{ packs.cont }} </td>
+        <td> tot : {{ cont.packages_to_update }} </td>
     </tr>
     {% endfor %}
 </table>
-{% for pack in packs %}
-    <li>{{ pack }}
-{% endfor %}
 {% endblock %}
 </div>
 <div id="content">

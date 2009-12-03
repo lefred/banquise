@@ -19,6 +19,13 @@ class Contract(models.Model):
             symmetrical=False,
             related_name='C_h_H')
 
+    def _packages_to_update(self):
+        tot=0
+        for host in self.hosts.all():
+            tot = tot + int(host.packages_to_update())
+        return tot
+    packages_to_update = property(fget=_packages_to_update)
+
     def __str__(self):
        return " (" + str(self.start_date) + " -> " + str(self.end_date) + ")"
 
