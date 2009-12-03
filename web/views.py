@@ -20,7 +20,13 @@ def _get_default_context(dict_in):
     """
 
     contracts = Contract.objects.filter(end_date__gte=datetime.date.today()).order_by('end_date')
-    d = {'contracts':contracts}
+    packs={}
+    for cont in contracts:
+        tot = 0
+        for host in cont.hosts.all():
+            tot = tot + int(host.packages_to_update())      
+        packs[cont]=tot
+    d = {'contracts':contracts,'packs':packs}
  
     if dict_in:
         d.update(dict_in)

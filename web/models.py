@@ -31,6 +31,7 @@ class Host(models.Model):
     public_ip = models.CharField(max_length=15)
     release = models.CharField(max_length=100)
     hash = models.CharField(max_length=32)
+    packages_to_update = lambda x:  ServerPackages.objects.filter(host=x,to_install=0).count()
 
     def __str__(self):
        return self.name

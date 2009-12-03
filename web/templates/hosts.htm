@@ -5,12 +5,14 @@
         <th>Name</th>
         <th>IP</th>
         <th>Public IP</th>
+        <th># pack to update</th>
     </tr>
     {% for host in hosts %}
     <tr>
         <td>{{ host.name }}</td>
         <td>{{ host.ip }} </td>
         <td>{{ host.public_ip }} </td>
+        <td>{{ host.packages_to_update }} </td>
     </tr>
 {% endfor %}
 </table>
