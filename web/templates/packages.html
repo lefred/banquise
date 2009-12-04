@@ -1,0 +1,11 @@
+{% extends "index.html" %}
+{% block content %}
+<table>
+    {% for pack in packages %}
+    <tr>
+        <td>{{ pack }}</td>
+    </tr>
+   {% endfor %}
+</table>
+</div>
+{% endblock %}

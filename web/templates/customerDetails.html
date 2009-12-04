@@ -23,7 +23,9 @@
             <img src='/media/images/icons/expiring.png' height='16'>
           {% endif %}
         </td>
-        <td><img src='/media/images/icons/host.png' height='16'> {{ cont.hosts.count }}</td>
+        <td><a href='/web/list/hosts/{{ cont.id }}'><img src='/media/images/icons/host.png' height='16' border='0'></a> 
+            {{ cont.hosts.count }}
+        </td>
     </tr>
     {% endfor %}
 </table>
@@ -42,7 +44,9 @@
     <tr>
         <td>{{cont.start_date}}</td>
         <td>{{cont.end_date}}</td> 
-        <td><img src='/media/images/icons/host.png' height='16'> {{ cont.hosts.count }}</td>
+        <td><a href='/web/list/hosts/{{ cont.id }}'><img src='/media/images/icons/host.png' height='16' border='0'></a> 
+            {{ cont.hosts.count }}
+        </td>
     </tr>
     {% endfor %}
 </table>
