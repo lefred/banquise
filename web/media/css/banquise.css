@@ -146,6 +146,15 @@ a:hover {
 		border-bottom: 1px dashed #6d90c2;
 }
 
+.packagesinstalled {
+		background-color: #b5d0d9;
+} 
+
+
+.packagestoinstall {
+		background-color: #97e4fd;
+} 
+
 #right {
 	float:right;
 	width:250px;

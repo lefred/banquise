@@ -12,8 +12,10 @@
         <th>installed date</th>
         <th>to install</th>
     </tr>
-    {% for pack in packages %}
-    <tr>
+    
+    {% for pack in packages|dictsort:"package.name" %}
+    {% if not pack.date_installed %} <tr class='packagestoinstall'> {% endif %}
+    {% if pack.date_installed %} <tr class='packagesinstalled'> {% endif %}
         <td>{{ pack.package.name }}</td>
         <td>{{ pack.package.arch }}</td>
         <td>{{ pack.package.version }}</td>

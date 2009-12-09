@@ -98,7 +98,7 @@ def details_customer(request, customer_id):
     s = set()
     for cont in contracts:
         for host in cont.hosts.all():
-         s.add(host)
+            s.add(host)
 
     valid_contracts = contracts.filter(end_date__gte=datetime.today())
     old_contracts = contracts.filter(end_date__lt=datetime.today())
