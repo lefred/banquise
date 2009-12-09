@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import uuid
 import json
 
@@ -19,7 +19,7 @@ def _get_default_context(dict_in):
     :rtype: :class:`dict`
     """
 
-    contracts = Contract.objects.filter(end_date__gte=datetime.date.today()).order_by('end_date')
+    contracts = Contract.objects.filter(end_date__gte=datetime.today()).order_by('end_date')
     d = {'contracts':contracts,}
 
     if dict_in:
@@ -100,8 +100,8 @@ def details_customer(request, customer_id):
         for host in cont.hosts.all():
          s.add(host)
 
-    valid_contracts = contracts.filter(end_date__gte=datetime.date.today())
-    old_contracts = contracts.filter(end_date__lt=datetime.date.today())
+    valid_contracts = contracts.filter(end_date__gte=datetime.today())
+    old_contracts = contracts.filter(end_date__lt=datetime.today())
 
 
     t = loader.get_template('customerDetails.html')
@@ -117,7 +117,7 @@ def call_test(request):
    uuid = request.POST[u'uuid']
    try:
        host = Host.objects.get(hash=uuid)
-       contract_list = Contract.objects.filter(hosts=host,end_date__gte=datetime.date.today())
+       contract_list = Contract.objects.filter(hosts=host,end_date__gte=datetime.today())
        if contract_list:
            #this is ok, the host exists and has a valid contract
            return HttpResponse("OK") 
@@ -151,21 +151,21 @@ def call_packs_done(request):
             # is there a link between the package and the server ?    
             try:
                 servpack = ServerPackages.objects.get(host=host,package=pack)
-                servpack.date_installed=datetime.date.now()
+                servpack.date_installed=datetime.today()
                 servpack.package_installed=1
                 servpack.save()
             except (ServerPackages.DoesNotExist):
                 servpack = ServerPackages(host=host,package=pack,
                                           package_installed=1,
-                                          date_available=datetime.date.now(),
-                                          date_installed=datetime.date.now())
+                                          date_available=datetime.today(),
+                                          date_installed=datetime.today())
                 servpack.save()
         except (Package.DoesNotExist):
             pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])
             pack.save()
             # create a link with the server
-            servpack = ServerPackages(host=host,package=pack,date_available=datetime.date.now(),
-                                      package_installed=1,date_installed=datetime.date.now())
+            servpack = ServerPackages(host=host,package=pack,date_available=datetime.today(),
+                                      package_installed=1,date_installed=datetime.today())
             servpack.save()
     return HttpResponse("Packages updated")
         
@@ -183,13 +183,13 @@ def call_send_update(request):
             try:
                 servpack = ServerPackages.objects.get(host=host,package=pack)
             except (ServerPackages.DoesNotExist):
-                servpack = ServerPackages(host=host,package=pack,date_available=datetime.date.now())
+                servpack = ServerPackages(host=host,package=pack,date_available=datetime.today())
                 servpack.save()
         except (Package.DoesNotExist):
             pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])
             pack.save()
             # create a link with the server
-            servpack = ServerPackages(host=host,package=pack,date_available=datetime.date.now())
+            servpack = ServerPackages(host=host,package=pack,date_available=datetime.today())
             servpack.save()
         # check if we have to update the package
         if servpack.to_install:
@@ -208,7 +208,7 @@ def call_setup(request):
        # search if the host exists alreay 
        host = Host.objects.get(name=request.POST[u'hostname'])
        # is it link to a valid contract already ?
-       contract_list = Contract.objects.filter(customer=customer,hosts=host,end_date__gte=datetime.date.today())
+       contract_list = Contract.objects.filter(customer=customer,hosts=host,end_date__gte=datetime.today())
        if contract_list:
            print "This host is already linked to a valid contract" 
            return HttpResponse("ERROR1") 

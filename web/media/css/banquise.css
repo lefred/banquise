@@ -123,6 +123,28 @@ a:hover {
 		border-bottom: 1px dashed #6d90c2;
 }
 
+#packages {
+        margin-left: 300px;
+}
+
+#packages table {
+	    border-collapse:collapse;
+	    width: 70%;
+	    padding: 10;
+	    margin: 10;
+		border: 2px solid #6d90c2;
+}
+
+#packages th {
+	    font-size: 10px;
+		text-align: left;
+}
+
+#packages td {
+	    font-size: 10px;
+		color: #6d90c2;
+		border-bottom: 1px dashed #6d90c2;
+}
 
 #right {
 	float:right;

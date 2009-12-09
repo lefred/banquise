@@ -1,9 +1,26 @@
 {% extends "index.html" %}
+{%load smart_if%}
 {% block content %}
+<div id='packages'>
 <table>
+    <tr>
+        <th>name</th>
+        <th>arch</th>
+        <th>version</th>
+        <th>release</th>
+        <th>available since</th>
+        <th>installed date</th>
+        <th>to install</th>
+    </tr>
     {% for pack in packages %}
     <tr>
-        <td>{{ pack }}</td>
+        <td>{{ pack.package.name }}</td>
+        <td>{{ pack.package.arch }}</td>
+        <td>{{ pack.package.version }}</td>
+        <td>{{ pack.package.release }}</td>
+        <td>{{ pack.date_available }}</td>
+        <td>{{ pack.date_installed }}</td>
+        <td>{% if not pack.date_installed %}<input type="checkbox" name="{{ pack.id }}" value="to_install" />{% endif %}</td>
     </tr>
    {% endfor %}
 </table>
