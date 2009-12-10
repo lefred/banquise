@@ -94,6 +94,7 @@ def list_packages(request, host_id=""):
             p = ServerPackages.objects.get(id=id)
             p.to_install = True
             p.save()
+        packages = ServerPackages.objects.filter(host=host)
 
     t = loader.get_template('packages.html')
     c = RequestContext(request, _get_default_context({'packages':packages,}))
@@ -131,17 +132,17 @@ def details_customer(request, customer_id):
 def call_test(request):
    uuid = request.POST[u'uuid']
    try:
-       host = Host.objects.get(hash=uuid)
-       contract_list = Contract.objects.filter(hosts=host,end_date__gte=datetime.today())
-       if contract_list:
-           #this is ok, the host exists and has a valid contract
-           return HttpResponse("OK") 
-       else:
-           #this host has no valid contract linked to it
-           return HttpResponse("ERROR2")
+	   host = Host.objects.get(hash=uuid)
+	   contract_list = Contract.objects.filter(hosts=host,end_date__gte=datetime.today())
+	   if contract_list:
+		   #this is ok, the host exists and has a valid contract
+		   return HttpResponse("OK") 
+	   else:
+		   #this host has no valid contract linked to it
+		   return HttpResponse("ERROR2")
    except:
-           #no host found
-           return HttpResponse("ERROR3")
+		   #no host found
+		   return HttpResponse("ERROR3")
                   
 def call_set_release(request):
    uuid = request.POST[u'uuid']
