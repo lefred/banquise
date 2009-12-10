@@ -2,6 +2,8 @@
 {%load smart_if%}
 {% block content %}
 <div id='packages'>
+    <form method='POST'>
+        <input type='submit' value='install'>
 <table>
     <tr>
         <th>name</th>
@@ -22,9 +24,16 @@
         <td>{{ pack.package.release }}</td>
         <td>{{ pack.date_available }}</td>
         <td>{{ pack.date_installed }}</td>
-        <td>{% if not pack.date_installed %}<input type="checkbox" name="{{ pack.id }}" value="to_install" />{% endif %}</td>
+        <td>{% if not pack.date_installed %}
+            {% if not pack.to_install %}
+            <input type="checkbox" value="{{ pack.id }}" name="to_install" />
+            {% else %}
+            <input type="checkbox" value="{{ pack.id }}" name="to_install" checked />
+            {% endif %}
+            {% endif %}</td>
     </tr>
    {% endfor %}
 </table>
+</form>
 </div>
 {% endblock %}

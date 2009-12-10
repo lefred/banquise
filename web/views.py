@@ -80,6 +80,13 @@ def list_packages(request, host_id=""):
     else:
         packages = Package.objects.all()
 
+    if request.method=='POST':
+        to_install = request.POST.getlist('to_install')
+        for id in to_install:
+            p = ServerPackages.objects.get(id=id)
+            p.to_install = True
+            p.save()
+
     t = loader.get_template('packages.html')
     c = RequestContext(request, _get_default_context({'packages':packages,}))
 
