@@ -13,7 +13,8 @@
         <td>{{ host.name }}</td>
         <td>{{ host.ip }} </td>
         <td>{{ host.public_ip }} </td>
-        <td align='center'>{{ host.packages_to_update }} </td>
+        <td align='center'>{{ host.packages_to_update }} <a href='/web/list/packages/{{ host.id }}/'
+        <img src='/media/images/icons/install.png' height='16' border='0'></a></td>
     </tr>
 {% endfor %}
 </table>
