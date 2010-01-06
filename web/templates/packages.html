@@ -15,7 +15,7 @@
     </tr>
     
     {% for pack in packages|dictsort:"package.name" %}
-    {% if not pack.date_installed %} <tr class='packagestoinstall'> 
+    {% if not pack.date_installed and not pack.package_skipped %} <tr class='packagestoinstall'> 
         <td>{{ pack.package.name }}</td>
         <td>{{ pack.package.arch }}</td>
         <td>{{ pack.package.version }}</td>
@@ -45,13 +45,15 @@
     </tr>
     
     {% for pack in packages|dictsort:"package.name" %}
-    {% if pack.date_installed %} <tr class='packagesinstalled'>
+    {% if pack.date_installed %} 
+    {% if not pack.package_skipped %} <tr class='packagesinstalled'> {% endif %}
+    {% if pack.package_skipped %} <tr class='packagesskipped'> {% endif %}
         <td>{{ pack.package.name }}</td>
         <td>{{ pack.package.arch }}</td>
         <td>{{ pack.package.version }}</td>
         <td>{{ pack.package.release }}</td>
         <td>{{ pack.date_available }}</td>
-        <td>{{ pack.date_installed }}</td>
+        <td>{% if pack.package_skipped %} skipped on {% endif %}{{ pack.date_installed }}</td>
     </tr>
     {% endif %}
    {% endfor %}

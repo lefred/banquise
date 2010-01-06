@@ -129,7 +129,7 @@ a:hover {
 
 #packages table {
 	    border-collapse:collapse;
-	    width: 70%;
+	    width: 90%;
 	    padding: 10;
 	    margin: 10;
 		border: 2px solid #6d90c2;
@@ -153,6 +153,10 @@ a:hover {
 
 .packagestoinstall {
 		background-color: #97e4fd;
+} 
+
+.packagesskipped {
+		background-color: #ff9d9d;
 } 
 
 #right {

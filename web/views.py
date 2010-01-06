@@ -160,23 +160,19 @@ def call_packs_done(request):
     host = Host.objects.get(hash=uuid)
     packages = request.POST[u'packages'] 
     packages_skipped = request.POST[u'packages_skipped']
+    
     # mark skipped all packages not more found on the repo
-    for package in json.loads(packages_skipped):
-        tab = package.split(",")
+    for skip_package in json.loads(packages_skipped):
+        skip_tab = skip_package.split(",")
         # find the package
-        try:
-            pack = Package.objects.get(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])
-            # is there a link between the package and the server ?    
-            try:
-                servpack = ServerPackages.objects.get(host=host,package=pack)
-                servpack.package_skipped=1
-                servpack.save()
-            except (ServerPackages.DoesNotExist):
-                servpack = ServerPackages(host=host,package=pack,
-                                          package_skipped=1,
-                                          date_available=datetime.today(),
-                                          date_installed=datetime.today())
-                servpack.save()
+        skip_pack = Package.objects.get(name=skip_tab[0],arch=skip_tab[1],version=skip_tab[2],release=skip_tab[3])
+        # is there a link between the package and the server ?    
+        skip_servpack = ServerPackages.objects.get(host=host,package=skip_pack)
+        skip_servpack.date_installed=datetime.today()
+        skip_servpack.package_skipped=1
+        skip_servpack.to_install=0
+        print "package to update = %s" % (skip_tab[0])
+        #skip_servpack.save()
     
     for package in json.loads(packages):
         tab = package.split(",")
