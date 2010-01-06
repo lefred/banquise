@@ -171,8 +171,7 @@ def call_packs_done(request):
         skip_servpack.date_installed=datetime.today()
         skip_servpack.package_skipped=1
         skip_servpack.to_install=0
-        print "package to update = %s" % (skip_tab[0])
-        #skip_servpack.save()
+        skip_servpack.save()
     
     for package in json.loads(packages):
         tab = package.split(",")
