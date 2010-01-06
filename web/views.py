@@ -236,6 +236,8 @@ def call_send_update(request):
 def call_setup(request):
    # search it there is a contract on which we can attach the host
    license_tosearch = request.POST[u'license'] 
+   pub_ip=request.META["REMOTE_ADDR"]
+   priv_ip=request.POST[u'priv_ip']
    contract = Contract.objects.get(license=license_tosearch) 
    customer = Customer.objects.filter(contract=contract)
    try: 
@@ -252,6 +254,8 @@ def call_setup(request):
    # generate a hash to identify the host
    host.hash = str(uuid.uuid4())[0:8]
    host.release = request.POST[u'release']
+   host.ip = priv_ip
+   host.public_ip=pub_ip
    host.save()
    contract.hosts.add(host)   
    contract.save()
