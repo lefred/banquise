@@ -159,6 +159,25 @@ def call_packs_done(request):
     uuid = request.POST[u'uuid']
     host = Host.objects.get(hash=uuid)
     packages = request.POST[u'packages'] 
+    packages_skipped = request.POST[u'packages_skipped']
+    # mark skipped all packages not more found on the repo
+    for package in json.loads(packages_skipped):
+        tab = package.split(",")
+        # find the package
+        try:
+            pack = Package.objects.get(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])
+            # is there a link between the package and the server ?    
+            try:
+                servpack = ServerPackages.objects.get(host=host,package=pack)
+                servpack.package_skipped=1
+                servpack.save()
+            except (ServerPackages.DoesNotExist):
+                servpack = ServerPackages(host=host,package=pack,
+                                          package_skipped=1,
+                                          date_available=datetime.today(),
+                                          date_installed=datetime.today())
+                servpack.save()
+    
     for package in json.loads(packages):
         tab = package.split(",")
         # find the package
@@ -208,10 +227,14 @@ def call_send_update(request):
             servpack = ServerPackages(host=host,package=pack,date_available=datetime.today())
             servpack.save()
         # check if we have to update the package
-        if servpack.to_install:
-            print "needs to be installed : " + str(pack)     
-            packages_install_list.append(package)
+        #if servpack.to_install:
+        #    print "needs to be installed : " + str(pack)     
+        #    packages_install_list.append(package)
             #packages_install_list.append("|")
+    packages = ServerPackages.objects.filter(host=host,to_install=1,package_installed=0)
+    for package in packages:
+        #print "needs to be installed : %s,%s,%s,%s" % (package.package.name,package.package.arch,package.package.version,package.package.release)  
+        packages_install_list.append("%s,%s,%s,%s" % (package.package.name,package.package.arch,package.package.version,package.package.release))
     json_value = json.dumps(packages_install_list)
     return HttpResponse(json_value, mimetype="application/javascript") 
         
