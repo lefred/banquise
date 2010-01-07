@@ -130,16 +130,19 @@ def details_customer(request, customer_id):
     contracts = customer.contract_set.all()
     # find the numbers of hosts for this customer
     s = set()
+    action=""
     for cont in contracts:
         for host in cont.hosts.all():
             s.add(host)
-
+    if request.GET.get('action') == 'add':
+        action='add'
     valid_contracts = contracts.filter(end_date__gte=datetime.today())
     old_contracts = contracts.filter(end_date__lt=datetime.today())
 
 
     t = loader.get_template('customerDetails.html')
     scope = _get_default_context({'customer':customer,'tot_hosts':len(s),
+                                  'action':action,
                                   'valid_contracts':valid_contracts,
                                   'old_contracts':old_contracts,})
     c = RequestContext(request, scope)

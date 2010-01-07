@@ -2,8 +2,18 @@
 {%load smart_if%}
 {% block content %}
 <h2>{{ customer.name }} <img src='/media/images/icons/contract.png'>{{ customer.contract_set.all.count }}
-<img src='/media/images/icons/host.png'> {{ tot_hosts }}</h2> 
+<img src='/media/images/icons/host.png'> {{ tot_hosts }} <a href="?action=add"><img src="/media/images/icons/add.png" title="add a new contract" border="0"></a></h2> 
 <p>
+{% if action %}
+New contract creation 
+<form method="POST">
+  <table>
+     <tr><th>start date</th><td><input type="text" name="start_date"></td></tr>
+     <tr><th>end date</th><td><input type="text" name="end_date"></td></tr>
+  </table>
+  <input type="submit" value="generate license">
+</form>
+{% else %}
 <div id=contracts>
 {% if valid_contracts %}
 <div id=validcontracts>
@@ -53,4 +63,5 @@
 </div>
 {% endif %}
 </div>
+{% endif %}
 {% endblock %}
