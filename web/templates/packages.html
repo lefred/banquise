@@ -16,10 +16,10 @@
     
     {% for pack in packages.object_list %}
     {% if not pack.date_installed and not pack.package_skipped %} <tr class='packagestoinstall'> 
-        <td>{{ pack.name }}</td>
-        <td>{{ pack.arch }}</td>
-        <td>{{ pack.version }}</td>
-        <td>{{ pack.release }}</td>
+        <td>{{ pack.package.name }}</td>
+        <td>{{ pack.package.arch }}</td>
+        <td>{{ pack.package.version }}</td>
+        <td>{{ pack.package.release }}</td>
         <td>{{ pack.date_available }}</td>
         <td>{% if not pack.date_installed %}
             {% if not pack.to_install %}
@@ -64,10 +64,10 @@
     {% if pack.date_installed %} 
     {% if not pack.skipped %} <tr class='packagesinstalled'> {% endif %}
     {% if pack.skipped %} <tr class='packagesskipped'> {% endif %}
-        <td>{{ pack.name  }}/td>
-        <td>{{ pack.arch }}</td>
-        <td>{{ pack.version }}</td>
-        <td>{{ pack.release }}</td>
+        <td>{{ pack.package.name  }}/td>
+        <td>{{ pack.package.arch }}</td>
+        <td>{{ pack.package.version }}</td>
+        <td>{{ pack.package.release }}</td>
         <td>{{ pack.date_available }}</td>
         <td>{% if pack.skipped %} skipped on {% endif %}{{ pack.date_installed }}</td>
     </tr>

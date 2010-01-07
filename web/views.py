@@ -10,6 +10,7 @@ from banquise.web.models import Customer, Host, Package, ServerPackages, Contrac
 from django.utils import simplejson
 from django.core import serializers
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.db.models.query import QuerySet
 
 def _get_default_context(dict_in):
     """Returns a :class:`dict` containing all the needed variables for the context
@@ -73,12 +74,9 @@ def list_packages(request, host_id=""):
     :type request: :class:`django.http.Request`
     """
 
-    if host_id.isdigit():
-        #this doesn't work yet
-        host = get_object_or_404(Host,pk=host_id)
-        packages = ServerPackages.objects.filter(host=host).order_by('name')
-    else:
-        packages = Package.objects.all().order_by('name')
+    #this doesn't work yet
+    host = get_object_or_404(Host,pk=host_id)
+    packages = ServerPackages.objects.filter(host=host).order_by('package__name')
 
     if request.method=='POST':
         to_install = request.POST.getlist('to_install')
@@ -89,12 +87,11 @@ def list_packages(request, host_id=""):
                 if pack.to_install and not pack.date_installed:
                     pack.to_install = False
                     pack.save()
-            
         for id in to_install:
             p = ServerPackages.objects.get(id=id)
             p.to_install = True
             p.save()
-        packages = ServerPackages.objects.filter(host=host).order_by('name')
+        packages = ServerPackages.objects.filter(host=host).order_by('package__name')
     paginator = Paginator(packages, 25)
     try:
         page = int(request.GET.get('page', '1'))
