@@ -81,10 +81,11 @@ def list_packages(request, host_id=""):
 
     if request.method=='POST':
         to_install = request.POST.getlist('to_install')
+        pack_in_page= request.POST.getlist('pack_in_page')
         # remove the a package to be installed if it's not more
         # present in the request and not yet installed on the server
         for pack in packages:
-            if str(pack.id) not in to_install:
+            if str(pack.id) not in to_install and str(pack.id) in pack_in_page:
                 if pack.to_install and not pack.date_installed:
                     pack.to_install = False
                     pack.save()

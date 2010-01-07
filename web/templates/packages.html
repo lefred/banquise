@@ -16,7 +16,9 @@
     
     {% for pack in packages.object_list %}
         <tr class='packagestoinstall'> 
-        <td>{{ pack.package.name }}</td>
+        <td>{{ pack.package.name }}
+        <input type="hidden" name="pack_in_page" value="{{ pack.id }}">
+        </td>
         <td>{{ pack.package.arch }}</td>
         <td>{{ pack.package.version }}</td>
         <td>{{ pack.package.release }}</td>
