@@ -76,7 +76,8 @@ def list_packages(request, host_id=""):
 
     #this doesn't work yet
     host = get_object_or_404(Host,pk=host_id)
-    packages = ServerPackages.objects.filter(host=host).order_by('package__name')
+    packages = ServerPackages.objects.filter(host=host,date_installed__isnull=True,package_skipped=0).order_by('package__name')
+    packages_installed = ServerPackages.objects.filter(host=host,date_installed__isnull=False).order_by('package__name')
 
     if request.method=='POST':
         to_install = request.POST.getlist('to_install')
@@ -101,9 +102,19 @@ def list_packages(request, host_id=""):
         packages_list = paginator.page(page)
     except (EmptyPage, InvalidPage):
         packages_list = paginator.page(paginator.num_pages)
+        
+    paginator_history = Paginator(packages_installed, 25)
+    try:
+        page_hist = int(request.GET.get('page_hist', '1'))
+    except ValueError:
+        page_hist = 1
+    try:
+        packages_installed_list = paginator_history.page(page_hist)
+    except (EmptyPage, InvalidPage):
+        packages_installed_list = paginator_history.page(paginator_history.num_pages)
 
     t = loader.get_template('packages.html')
-    c = RequestContext(request, _get_default_context({'packages':packages_list,}))
+    c = RequestContext(request, _get_default_context({'packages':packages_list,'packages_installed':packages_installed_list}))
 
     return HttpResponse(t.render(c))
 

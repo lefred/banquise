@@ -15,7 +15,7 @@
     </tr>
     
     {% for pack in packages.object_list %}
-    {% if not pack.date_installed and not pack.package_skipped %} <tr class='packagestoinstall'> 
+        <tr class='packagestoinstall'> 
         <td>{{ pack.package.name }}</td>
         <td>{{ pack.package.arch }}</td>
         <td>{{ pack.package.version }}</td>
@@ -29,7 +29,6 @@
             {% endif %}
             {% endif %}</td>
     </tr>
-    {% endif %}
    {% endfor %}
 </table>
         <input type='submit' value='install'>
@@ -49,7 +48,7 @@
         {% endif %}
     </span>
 </div>
-<h3>History</h3>
+<a name='history'><h3>History</h3></a>
 <table>
     <tr>
         <th>name</th>
@@ -60,19 +59,33 @@
         <th>installed date</th>
     </tr>
     
-    {% for pack in packages.object_list %}
-    {% if pack.date_installed %} 
+    {% for pack in packages_installed.object_list %}
     {% if not pack.skipped %} <tr class='packagesinstalled'> {% endif %}
     {% if pack.skipped %} <tr class='packagesskipped'> {% endif %}
-        <td>{{ pack.package.name  }}/td>
+        <td>{{ pack.package.name  }}</td>
         <td>{{ pack.package.arch }}</td>
         <td>{{ pack.package.version }}</td>
         <td>{{ pack.package.release }}</td>
         <td>{{ pack.date_available }}</td>
         <td>{% if pack.skipped %} skipped on {% endif %}{{ pack.date_installed }}</td>
     </tr>
-    {% endif %}
    {% endfor %}
 </table>
+<div class="pagination">
+    <span class="step-links">
+        {% if packages_installed.has_previous %}
+            <a href="?page_hist={{ packages_installed.previous_page_number }}#history">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ packages_installed.number }} of {{ packages_installed.paginator.num_pages }}.
+        </span>
+
+        {% if packages_installed.has_next %}
+            <a href="?page_hist={{ packages_installed.next_page_number }}#history">next</a>
+        {% endif %}
+    </span>
+</div>
+
 </div>
 {% endblock %}
