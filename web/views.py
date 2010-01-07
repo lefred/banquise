@@ -9,7 +9,7 @@ from django.template import RequestContext,loader
 from banquise.web.models import Customer, Host, Package, ServerPackages, Contract
 from django.utils import simplejson
 from django.core import serializers
-
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
 def _get_default_context(dict_in):
     """Returns a :class:`dict` containing all the needed variables for the context
@@ -95,9 +95,18 @@ def list_packages(request, host_id=""):
             p.to_install = True
             p.save()
         packages = ServerPackages.objects.filter(host=host)
+    paginator = Paginator(packages, 25)
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+    try:
+        packages_list = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        packages_list = paginator.page(paginator.num_pages)
 
     t = loader.get_template('packages.html')
-    c = RequestContext(request, _get_default_context({'packages':packages,}))
+    c = RequestContext(request, _get_default_context({'packages':packages_list,}))
 
     return HttpResponse(t.render(c))
 

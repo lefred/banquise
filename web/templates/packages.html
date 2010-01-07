@@ -32,7 +32,23 @@
     {% endif %}
    {% endfor %}
 </table>
+        <input type='submit' value='install'>
 </form>
+<div class="pagination">
+    <span class="step-links">
+        {% if packages.has_previous %}
+            <a href="?page={{ packages.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ packages.number }} of {{ packages.paginator.num_pages }}.
+        </span>
+
+        {% if contacts.has_next %}
+            <a href="?page={{ packages.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
 <h3>History</h3>
 <table>
     <tr>
