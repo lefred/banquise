@@ -76,9 +76,9 @@ def list_packages(request, host_id=""):
     if host_id.isdigit():
         #this doesn't work yet
         host = get_object_or_404(Host,pk=host_id)
-        packages = ServerPackages.objects.filter(host=host)
+        packages = ServerPackages.objects.filter(host=host).order_by('name')
     else:
-        packages = Package.objects.all()
+        packages = Package.objects.all().order_by('name')
 
     if request.method=='POST':
         to_install = request.POST.getlist('to_install')
@@ -94,7 +94,7 @@ def list_packages(request, host_id=""):
             p = ServerPackages.objects.get(id=id)
             p.to_install = True
             p.save()
-        packages = ServerPackages.objects.filter(host=host)
+        packages = ServerPackages.objects.filter(host=host).order_by('name')
     paginator = Paginator(packages, 25)
     try:
         page = int(request.GET.get('page', '1'))

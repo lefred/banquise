@@ -14,12 +14,12 @@
         <th>to install</th>
     </tr>
     
-    {% for pack in packages|dictsort:"package.name" %}
+    {% for pack in packages.object_list %}
     {% if not pack.date_installed and not pack.package_skipped %} <tr class='packagestoinstall'> 
-        <td>{{ pack.package.name }}</td>
-        <td>{{ pack.package.arch }}</td>
-        <td>{{ pack.package.version }}</td>
-        <td>{{ pack.package.release }}</td>
+        <td>{{ pack.name }}</td>
+        <td>{{ pack.arch }}</td>
+        <td>{{ pack.version }}</td>
+        <td>{{ pack.release }}</td>
         <td>{{ pack.date_available }}</td>
         <td>{% if not pack.date_installed %}
             {% if not pack.to_install %}
@@ -44,7 +44,7 @@
             Page {{ packages.number }} of {{ packages.paginator.num_pages }}.
         </span>
 
-        {% if contacts.has_next %}
+        {% if packages.has_next %}
             <a href="?page={{ packages.next_page_number }}">next</a>
         {% endif %}
     </span>
@@ -60,16 +60,16 @@
         <th>installed date</th>
     </tr>
     
-    {% for pack in packages|dictsort:"package.name" %}
+    {% for pack in packages.object_list %}
     {% if pack.date_installed %} 
-    {% if not pack.package_skipped %} <tr class='packagesinstalled'> {% endif %}
-    {% if pack.package_skipped %} <tr class='packagesskipped'> {% endif %}
-        <td>{{ pack.package.name }}</td>
-        <td>{{ pack.package.arch }}</td>
-        <td>{{ pack.package.version }}</td>
-        <td>{{ pack.package.release }}</td>
+    {% if not pack.skipped %} <tr class='packagesinstalled'> {% endif %}
+    {% if pack.skipped %} <tr class='packagesskipped'> {% endif %}
+        <td>{{ pack.name  }}/td>
+        <td>{{ pack.arch }}</td>
+        <td>{{ pack.version }}</td>
+        <td>{{ pack.release }}</td>
         <td>{{ pack.date_available }}</td>
-        <td>{% if pack.package_skipped %} skipped on {% endif %}{{ pack.date_installed }}</td>
+        <td>{% if pack.skipped %} skipped on {% endif %}{{ pack.date_installed }}</td>
     </tr>
     {% endif %}
    {% endfor %}
