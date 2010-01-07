@@ -146,6 +146,31 @@ def details_customer(request, customer_id):
 
     return HttpResponse(t.render(c))
 
+def form_packages(request):
+    """Return a :class:`django.db.models.query.QuerySet` of :class:`Package` objects
+
+    :param request: :class:`django.http.HttpRequest` given by the framework
+    :type request: :class:`django.http.Request`
+    """
+    packages=[]
+    link_packages=[]
+    if request.method=='POST':
+        s_name = request.POST.get('name')
+        s_arch = request.POST.get('arch')
+        s_version = request.POST.get('version')
+        s_release = request.POST.get('release')
+        packages=Package.objects.filter(name__contains=s_name,arch__contains=s_arch,version__contains=s_version,release__contains=s_release).order_by('name','arch','version','release')
+    elif request.GET.get('id'):
+        pack_id = request.GET.get('id')
+        packages=Package.objects.filter(id=pack_id)
+        link_packages = ServerPackages.objects.filter(package=packages).order_by('package__name')
+        
+    t = loader.get_template('packageForm.html')
+    scope = _get_default_context({'packages':packages,'link_packages':link_packages})
+    c = RequestContext(request, scope)
+
+    return HttpResponse(t.render(c))
+
 # REST methods
 def call_test(request):
    uuid = request.POST[u'uuid']
