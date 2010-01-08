@@ -2,7 +2,6 @@ from django.db import models
 import datetime
 
 
-
 class Customer(models.Model):
     name = models.CharField(max_length=150)
 

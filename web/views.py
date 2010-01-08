@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.template import RequestContext,loader
 from banquise.web.models import Customer, Host, Package, ServerPackages, Contract
+from banquise.web.forms import ContractForm, PackageForm
 from django.utils import simplejson
 from django.core import serializers
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
@@ -131,11 +132,26 @@ def details_customer(request, customer_id):
     # find the numbers of hosts for this customer
     s = set()
     action=""
+    form=""
     for cont in contracts:
         for host in cont.hosts.all():
             s.add(host)
-    if request.GET.get('action') == 'add':
+    ok=0        
+    if request.method == 'POST': # If the form has been submitted...
+        form = ContractForm(request.POST) # A form bound to the POST data
+        ok=1
+        if form.is_valid(): # All validation rules pass
+            contract=form.save(commit=False)
+            contract.license="%s-%s-%s" % (str(uuid.uuid4())[0:3],str(uuid.uuid4())[0:4],str(uuid.uuid4())[0:3])
+            contract.customer=customer
+            contract.save()
+            ok=0
+    if (request.GET.get('action') == 'add' and not request.method == 'POST') or ok == 1:
         action='add'
+        form = ContractForm();
+    elif (request.GET.get('action') == 'delete'):
+        contract = get_object_or_404(Contract,pk=request.GET.get('cont'))    
+        contract.delete()
     valid_contracts = contracts.filter(end_date__gte=datetime.today())
     old_contracts = contracts.filter(end_date__lt=datetime.today())
 
@@ -143,6 +159,7 @@ def details_customer(request, customer_id):
     t = loader.get_template('customerDetails.html')
     scope = _get_default_context({'customer':customer,'tot_hosts':len(s),
                                   'action':action,
+                                  'form':form,
                                   'valid_contracts':valid_contracts,
                                   'old_contracts':old_contracts,})
     c = RequestContext(request, scope)
@@ -157,19 +174,26 @@ def form_packages(request):
     """
     packages=[]
     link_packages=[]
-    if request.method=='POST':
-        s_name = request.POST.get('name')
-        s_arch = request.POST.get('arch')
-        s_version = request.POST.get('version')
-        s_release = request.POST.get('release')
-        packages=Package.objects.filter(name__contains=s_name,arch__contains=s_arch,version__contains=s_version,release__contains=s_release).order_by('name','arch','version','release')
+    form = PackageForm();
+    if request.method == 'POST': # If the form has been submitted...
+        form = PackageForm(request.POST) # A form bound to the POST data
+        if form.is_valid(): # All validation rules pass
+            # Process the data in form.cleaned_data
+            # ...
+            s_name = form.cleaned_data['name']
+            s_arch = form.cleaned_data['arch']
+            s_version = form.cleaned_data['version']
+            s_release = form.cleaned_data['release']
+            packages=Package.objects.filter(name__contains=s_name,arch__contains=s_arch,version__contains=s_version,release__contains=s_release).order_by('name','arch','version','release')
+
+        
     elif request.GET.get('id'):
         pack_id = request.GET.get('id')
         packages=Package.objects.filter(id=pack_id)
         link_packages = ServerPackages.objects.filter(package=packages).order_by('package__name')
         
     t = loader.get_template('packageForm.html')
-    scope = _get_default_context({'packages':packages,'link_packages':link_packages})
+    scope = _get_default_context({'form':form,'packages':packages,'link_packages':link_packages})
     c = RequestContext(request, scope)
 
     return HttpResponse(t.render(c))
