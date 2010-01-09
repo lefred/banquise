@@ -100,7 +100,6 @@ def list_packages(request, host_id=""):
         # remove the a package to be installed if it's not more
         # present in the request and not yet installed on the server
         if request.POST.get('update_all'):
-            print "install all packages"
             for pack in packages:
                 pack.to_install = True
                 pack.save()
@@ -220,30 +219,30 @@ def form_packages(request):
 
 # REST methods
 def call_test(request):
-   uuid = request.POST[u'uuid']
-   try:
-	   host = Host.objects.get(hash=uuid)
-	   contract_list = Contract.objects.filter(hosts=host,end_date__gte=datetime.today())
-	   if contract_list:
-		   #this is ok, the host exists and has a valid contract
-		   return HttpResponse("OK") 
-	   else:
-		   #this host has no valid contract linked to it
-		   return HttpResponse("ERROR2")
-   except:
-		   #no host found
-		   return HttpResponse("ERROR3")
+    uuid = request.POST[u'uuid']
+    try:
+        host = Host.objects.get(hash=uuid)
+        contract_list = Contract.objects.filter(hosts=host,end_date__gte=datetime.today())
+        if contract_list:
+            #this is ok, the host exists and has a valid contract
+            return HttpResponse("OK") 
+        else:
+            #this host has no valid contract linked to it
+            return HttpResponse("ERROR2")
+    except:
+            #no host found
+            return HttpResponse("ERROR3")
                   
 def call_set_release(request):
-   uuid = request.POST[u'uuid']
-   try:
-       host = Host.objects.get(hash=uuid)
-       host.release = request.POST[u'release']
-       host.save()
-       return HttpResponse("OK") 
-   except:     
-       # can set the release
-       return HttpResponse("ERROR4") 
+    uuid = request.POST[u'uuid']
+    try:
+        host = Host.objects.get(hash=uuid)
+        host.release = request.POST[u'release']
+        host.save()
+        return HttpResponse("OK") 
+    except:     
+        # can set the release
+        return HttpResponse("ERROR4") 
 
 def call_packs_done(request):
     uuid = request.POST[u'uuid']
@@ -324,31 +323,31 @@ def call_send_update(request):
     return HttpResponse(json_value, mimetype="application/javascript") 
         
 def call_setup(request):
-   # search it there is a contract on which we can attach the host
-   license_tosearch = request.POST[u'license'] 
-   pub_ip=request.META["REMOTE_ADDR"]
-   priv_ip=request.POST[u'priv_ip']
-   contract = Contract.objects.get(license=license_tosearch) 
-   customer = Customer.objects.filter(contract=contract)
-   try: 
-       # search if the host exists alreay 
-       host = Host.objects.get(name=request.POST[u'hostname'])
-       # is it link to a valid contract already ?
-       contract_list = Contract.objects.filter(customer=customer,hosts=host,end_date__gte=datetime.today())
-       if contract_list:
-           print "This host is already linked to a valid contract" 
-           return HttpResponse("ERROR1") 
+    # search it there is a contract on which we can attach the host
+    license_tosearch = request.POST[u'license'] 
+    pub_ip=request.META["REMOTE_ADDR"]
+    priv_ip=request.POST[u'priv_ip']
+    contract = Contract.objects.get(license=license_tosearch) 
+    customer = Customer.objects.filter(contract=contract)
+    try: 
+        # search if the host exists alreay 
+        host = Host.objects.get(name=request.POST[u'hostname'])
+        # is it link to a valid contract already ?
+        contract_list = Contract.objects.filter(customer=customer,hosts=host,end_date__gte=datetime.today())
+        if contract_list:
+            print "This host is already linked to a valid contract" 
+            return HttpResponse("ERROR1") 
        
-   except:     
-       host = Host(name=request.POST[u'hostname'])
-   # generate a hash to identify the host
-   host.hash = str(uuid.uuid4())[0:8]
-   host.release = request.POST[u'release']
-   host.ip = priv_ip
-   host.public_ip=pub_ip
-   host.save()
-   contract.hosts.add(host)   
-   contract.save()
-   #json_value = serializers.serialize('json',contract)
-   #return HttpResponse(json_value, mimetype="application/javascript") 
-   return HttpResponse(host.hash)
+    except:     
+        host = Host(name=request.POST[u'hostname'])
+    # generate a hash to identify the host
+    host.hash = str(uuid.uuid4())[0:8]
+    host.release = request.POST[u'release']
+    host.ip = priv_ip
+    host.public_ip=pub_ip
+    host.save()
+    contract.hosts.add(host)   
+    contract.save()
+    #json_value = serializers.serialize('json',contract)
+    #return HttpResponse(json_value, mimetype="application/javascript") 
+    return HttpResponse(host.hash)
