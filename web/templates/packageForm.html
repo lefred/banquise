@@ -1,0 +1,54 @@
+{% extends "index.html" %}
+{%load smart_if%}
+{% block content %}
+<h2>Search for packages: </h2>
+<div id='formpackages'>
+    <form method='POST'>
+<table>
+  {{ form }}
+ </table>
+        <input type='submit' value='search'>
+{% if packages %}    
+<table>
+    <tr>
+        <th>name</th>
+        <th>arch</th>
+        <th>version</th>
+        <th>release</th>
+        <th>more</th>
+    </tr>
+    
+    {% for pack in packages %}
+    <tr class='packagestoinstall'> 
+        <td>{{ pack.name  }}</td>
+        <td>{{ pack.arch }}</td>
+        <td>{{ pack.version }}</td>
+        <td>{{ pack.release }}</td>
+        <td><a href="?id={{ pack.id }}"><img src='/media/images/icons/add.png' height='16' border='0'></a>
+    </tr>
+   {% endfor %}
+</table>
+{% if link_packages %}    
+<div id='formpackages2'>
+  <table>
+    <tr>
+        <th>host</th>
+        <th>available since</th>
+        <th>installed date</th>
+    </tr>
+    
+    {% for pack in link_packages %}
+      {% if not pack.date_installed %} <tr class='packagestoinstall'> {% endif %}
+      {% if not pack.skipped and pack.date_installed %} <tr class='packagesinstalled'> {% endif %}
+      {% if pack.skipped and pack.date_installed %} <tr class='packagesskipped'> {% endif %}
+        <td>{{ pack.host.name  }}</td>
+        <td>{{ pack.date_available }}</td>
+        <td>{% if pack.skipped %} skipped on {% endif %}{{ pack.date_installed }}</td>
+      </tr>
+   {% endfor %}
+  </table>
+</div>
+{% endif %}
+{% endif %}    
+</div>
+{% endblock %}

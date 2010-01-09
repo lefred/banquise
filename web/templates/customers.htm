@@ -1,6 +1,7 @@
 {% extends "index.html" %}
 {% block content %}
 <div id="customers">
+<a href="?action=add"><img src="/media/images/icons/add.png" title="add a new customer" border="0"></a>
 <table>
 {% for cust in customers %}
 <tr>
@@ -10,5 +11,15 @@
 </tr>
 {% endfor %}
 </table>
+{% if action %}
+<p>
+Enter valid information for the new customer
+<form method="POST">
+  <table>
+	{{ form }}
+  </table>
+  <input type="submit" value="Save customer">
+</form>
+{% endif %}
 </div>
 {% endblock %}

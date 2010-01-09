@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.template import RequestContext,loader
 from banquise.web.models import Customer, Host, Package, ServerPackages, Contract
-from banquise.web.forms import ContractForm, PackageForm
+from banquise.web.forms import ContractForm, PackageForm, CustomerForm
 from django.utils import simplejson
 from django.core import serializers
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
@@ -42,9 +42,23 @@ def list_customers(request):
     :type request: :class:`django.http.Request`
     """
     customers = Customer.objects.all()
-
+    action=""
+    form=""
+    ok=0        
+    if request.method == 'POST': # If the form has been submitted...
+        form = CustomerForm(request.POST) # A form bound to the POST data
+        ok=1
+        if form.is_valid(): # All validation rules pass
+            form.save()
+            ok=0
+    if (request.GET.get('action') == 'add' and not request.method == 'POST') or ok == 1:
+        action='add'
+        form = CustomerForm();
     t = loader.get_template('customers.htm')
-    scope = _get_default_context({'customers':customers,})
+    scope = _get_default_context({'customers':customers,
+                                  'action':action,
+                                  'form':form,
+                                  })
 
     c = RequestContext(request, scope)
 
@@ -61,7 +75,7 @@ def list_hosts(request, contract_id=""):
         hosts = Host.objects.filter(C_h_H=contract_id)
     else:
         hosts = Host.objects.all()
-    contracts = Contract.objects.all()
+    #contracts = Contract.objects.all()
 
     t = loader.get_template('hosts.htm')
     c = RequestContext(request, _get_default_context({'hosts':hosts,}))
@@ -85,15 +99,21 @@ def list_packages(request, host_id=""):
         pack_in_page= request.POST.getlist('pack_in_page')
         # remove the a package to be installed if it's not more
         # present in the request and not yet installed on the server
-        for pack in packages:
-            if str(pack.id) not in to_install and str(pack.id) in pack_in_page:
-                if pack.to_install and not pack.date_installed:
-                    pack.to_install = False
-                    pack.save()
-        for id in to_install:
-            p = ServerPackages.objects.get(id=id)
-            p.to_install = True
-            p.save()
+        if request.POST.get('update_all'):
+            print "install all packages"
+            for pack in packages:
+                pack.to_install = True
+                pack.save()
+        else:
+            for pack in packages:
+                if str(pack.id) not in to_install and str(pack.id) in pack_in_page:
+                    if pack.to_install and not pack.date_installed:
+                        pack.to_install = False
+                        pack.save()
+            for id in to_install:
+                p = ServerPackages.objects.get(id=id)
+                p.to_install = True
+                p.save()
         packages = ServerPackages.objects.filter(host=host,date_installed__isnull=True,package_skipped=0).order_by('package__name')
     paginator = Paginator(packages, 25)
     try:
