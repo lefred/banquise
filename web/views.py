@@ -35,6 +35,33 @@ def index(request):
 
     return HttpResponse(t.render(c))
 
+def server_package(request,package_id=''):
+    package=Package.objects.get(id=package_id)
+    link_packages = ServerPackages.objects.filter(package=package).order_by('package__name')
+    if request.method == 'POST':
+        for host in request.POST.getlist('hosts'): 
+            servpack = ServerPackages(host=Host.objects.get(id=host),package=package,
+                                  to_install=1)
+            servpack.save()
+        return HttpResponseRedirect("/web/list/packages/?id=%s" % (package_id))
+
+    hosts = Host.objects.all()
+    host_list=[]
+    host_installed=[]
+    for srvpack in link_packages:
+        host_installed.append("%s" % (srvpack.host.id))
+    for host in hosts:
+        if str(host.id) not in host_installed:
+            host_list.append(host)
+ 
+    t = loader.get_template('ServerPackage.html')
+    scope = _get_default_context({'package':package,
+                                  'host_list':host_list,
+                                  })
+    c = RequestContext(request, scope)
+    return HttpResponse(t.render(c))
+
+    
 def list_customers(request):
     """Return a list of :class:`Customer` objects
 
@@ -159,6 +186,7 @@ def details_customer(request, customer_id):
     if request.method == 'POST': # If the form has been submitted...
         form = ContractForm(request.POST) # A form bound to the POST data
         ok=1
+           
         if form.is_valid(): # All validation rules pass
             contract=form.save(commit=False)
             contract.license="%s-%s-%s" % (str(uuid.uuid4())[0:3],str(uuid.uuid4())[0:4],str(uuid.uuid4())[0:3])
@@ -194,7 +222,14 @@ def form_packages(request):
     packages=[]
     link_packages=[]
     form = PackageForm();
-    if request.method == 'POST': # If the form has been submitted...
+    ok=0
+    if request.POST.get("to_install"):
+        print "install " +str(request.POST.get("to_install")) 
+        serv_package=ServerPackages.objects.get(id=request.POST.get("to_install"))
+        serv_package.to_install=1
+        serv_package.save()
+        ok=1
+    if request.method == 'POST' and ok == 0: # If the form has been submitted...
         form = PackageForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass
             # Process the data in form.cleaned_data
@@ -204,7 +239,6 @@ def form_packages(request):
             s_version = form.cleaned_data['version']
             s_release = form.cleaned_data['release']
             packages=Package.objects.filter(name__contains=s_name,arch__contains=s_arch,version__contains=s_version,release__contains=s_release).order_by('name','arch','version','release')
-
         
     elif request.GET.get('id'):
         pack_id = request.GET.get('id')
@@ -212,7 +246,7 @@ def form_packages(request):
         link_packages = ServerPackages.objects.filter(package=packages).order_by('package__name')
         
     t = loader.get_template('packageForm.html')
-    scope = _get_default_context({'form':form,'packages':packages,'link_packages':link_packages})
+    scope = _get_default_context({'pack_detail':pack_id,'form':form,'packages':packages,'link_packages':link_packages})
     c = RequestContext(request, scope)
 
     return HttpResponse(t.render(c))

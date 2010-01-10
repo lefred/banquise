@@ -1,0 +1,22 @@
+{% extends "index.html" %}
+{%load smart_if%}
+{% block content %}
+<h2>Install {{ package.name }}-{{ package.arch}}-{{ package.version}}-{{ package.release }}: </h2>
+<div id='formpackages'>
+    <form method='POST'>
+        <table>
+        <tr>
+           <th>Host</th>
+           <td>
+             <select multiple="multiple" name="hosts">
+             {% for host in host_list %}
+                <option value="{{ host.id }}">{{ host.name }}</option>
+             {% endfor %}
+             </select>
+           </td>
+        </tr>
+        </table>
+        <input type="submit" value="Install">
+    </form>
+</div>
+{% endblock %}

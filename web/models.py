@@ -8,7 +8,7 @@ class Customer(models.Model):
     email = models.CharField(max_length=150) 
     
     def __unicode__(self):
-       return self.name
+        return self.name
 
 class Contract(models.Model):
     start_date = models.DateField('starting date')
@@ -28,7 +28,7 @@ class Contract(models.Model):
     packages_to_update = property(fget=_packages_to_update)
 
     def __str__(self):
-       return " (" + str(self.start_date) + " -> " + str(self.end_date) + ")"
+        return " (" + str(self.start_date) + " -> " + str(self.end_date) + ")"
 
     class Meta:
         get_latest_by = 'end_date'

@@ -28,6 +28,9 @@
     </tr>
    {% endfor %}
 </table>
+{% if pack_detail %}
+<a href="/web/serverpackage/{{ pack_detail }}">Install the package to a server</a>
+{% endif %}
 {% if link_packages %}    
 <div id='formpackages2'>
   <table>
@@ -43,7 +46,20 @@
       {% if pack.skipped and pack.date_installed %} <tr class='packagesskipped'> {% endif %}
         <td>{{ pack.host.name  }}</td>
         <td>{{ pack.date_available }}</td>
-        <td>{% if pack.skipped %} skipped on {% endif %}{{ pack.date_installed }}</td>
+        <td>{% if pack.skipped %} skipped on {% endif %} 
+            {% if not pack.date_installed and not pack.to_install %}
+               <form method="POST">
+                  <input type="hidden" name="to_install" value="{{ pack.id }}"> 
+                  <input type="submit" name="update" value="update"> 
+               </form>
+             {% else %}
+               {% if not pack.date_installed %}
+                  pending
+               {% else %}
+                 {{ pack.date_installed }}
+               {% endif %} 
+            {% endif %}
+        </td>
       </tr>
    {% endfor %}
   </table>
