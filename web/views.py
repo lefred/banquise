@@ -12,6 +12,8 @@ from django.utils import simplejson
 from django.core import serializers
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.db.models.query import QuerySet
+from django.contrib.auth import authenticate
+
 
 def _get_default_context(dict_in):
     """Returns a :class:`dict` containing all the needed variables for the context
@@ -222,6 +224,7 @@ def form_packages(request):
     packages=[]
     link_packages=[]
     form = PackageForm();
+    pack_id=""
     ok=0
     if request.POST.get("to_install"):
         print "install " +str(request.POST.get("to_install")) 
@@ -233,13 +236,12 @@ def form_packages(request):
         form = PackageForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass
             # Process the data in form.cleaned_data
-            # ...
             s_name = form.cleaned_data['name']
             s_arch = form.cleaned_data['arch']
             s_version = form.cleaned_data['version']
             s_release = form.cleaned_data['release']
             packages=Package.objects.filter(name__contains=s_name,arch__contains=s_arch,version__contains=s_version,release__contains=s_release).order_by('name','arch','version','release')
-        
+            
     elif request.GET.get('id'):
         pack_id = request.GET.get('id')
         packages=Package.objects.filter(id=pack_id)
@@ -321,6 +323,32 @@ def call_packs_done(request):
                                       package_installed=1,date_installed=datetime.today())
             servpack.save()
     return HttpResponse("Packages updated")
+
+def call_send_list(request):
+    uuid = request.POST[u'uuid']
+    host = Host.objects.get(hash=uuid)
+    packages = request.POST[u'packages']      
+    packages_add_list = [] 
+    login = request.POST[u'login']
+    passwd = request.POST[u'passwd'] 
+    user = authenticate(username=login, password=passwd)
+    if user is not None:
+        if not user.is_active:
+            return HttpResponse("Your account has been disabled!")
+    else:
+        return HttpResponse("Your username and password were incorrect.")
+    if not user.is_staff:
+        return HttpResponse("You are not allowed to use this command.")
+    
+    for package in json.loads(packages):
+        tab = package.split(",")
+        try:
+            pack = Package.objects.get(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])
+        except (Package.DoesNotExist):
+            pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])
+            pack.save()
+
+    return HttpResponse("Ok")
         
 def call_send_update(request):
     uuid = request.POST[u'uuid']

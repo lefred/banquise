@@ -33,4 +33,5 @@ urlpatterns = patterns('banquise.web.views',
     (r'^json/set_release/$','call_set_release'),
     (r'^json/update/$','call_send_update'),
     (r'^json/packdone/$','call_packs_done'),
+    (r'^json/addpack/$','call_send_list'),
 )
