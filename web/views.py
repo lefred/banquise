@@ -43,7 +43,7 @@ def server_package(request,package_id=''):
     if request.method == 'POST':
         for host in request.POST.getlist('hosts'): 
             servpack = ServerPackages(host=Host.objects.get(id=host),package=package,
-                                  to_install=1)
+                                  to_install=1,new_install=1)
             servpack.save()
         return HttpResponseRedirect("/web/list/packages/?id=%s" % (package_id))
 
@@ -240,7 +240,8 @@ def form_packages(request):
             s_arch = form.cleaned_data['arch']
             s_version = form.cleaned_data['version']
             s_release = form.cleaned_data['release']
-            packages=Package.objects.filter(name__contains=s_name,arch__contains=s_arch,version__contains=s_version,release__contains=s_release).order_by('name','arch','version','release')
+            s_repo = form.cleaned_data['repo']
+            packages=Package.objects.filter(name__contains=s_name,arch__contains=s_arch,version__contains=s_version,release__contains=s_release,repo__contains=s_repo).order_by('name','arch','version','release')
             
     elif request.GET.get('id'):
         pack_id = request.GET.get('id')
@@ -350,6 +351,16 @@ def call_send_list(request):
 
     return HttpResponse("Ok")
         
+def call_send_install(request):
+    uuid = request.POST[u'uuid']
+    host = Host.objects.get(hash=uuid)
+    packages_install_list = [] 
+    packages = ServerPackages.objects.filter(host=host,to_install=1,package_installed=0,new_install=1)
+    for package in packages:
+        packages_install_list.append("%s,%s,%s,%s" % (package.package.name,package.package.arch,package.package.version,package.package.release))
+    json_value = json.dumps(packages_install_list)
+    return HttpResponse(json_value, mimetype="application/javascript") 
+         
 def call_send_update(request):
     uuid = request.POST[u'uuid']
     host = Host.objects.get(hash=uuid)
@@ -367,7 +378,7 @@ def call_send_update(request):
                 servpack = ServerPackages(host=host,package=pack,date_available=datetime.today())
                 servpack.save()
         except (Package.DoesNotExist):
-            pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])
+            pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3],repo=tab[4])
             pack.save()
             # create a link with the server
             servpack = ServerPackages(host=host,package=pack,date_available=datetime.today())
@@ -377,7 +388,7 @@ def call_send_update(request):
         #    print "needs to be installed : " + str(pack)     
         #    packages_install_list.append(package)
             #packages_install_list.append("|")
-    packages = ServerPackages.objects.filter(host=host,to_install=1,package_installed=0)
+    packages = ServerPackages.objects.filter(host=host,to_install=1,package_installed=0,new_install=0)
     for package in packages:
         #print "needs to be installed : %s,%s,%s,%s" % (package.package.name,package.package.arch,package.package.version,package.package.release)  
         packages_install_list.append("%s,%s,%s,%s" % (package.package.name,package.package.arch,package.package.version,package.package.release))

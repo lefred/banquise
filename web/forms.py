@@ -26,6 +26,7 @@ class PackageForm(forms.ModelForm):
     arch = forms.CharField(required=False)
     version = forms.CharField(required=False)
     release = forms.CharField(required=False)
+    repo = forms.CharField(required=False)
     class Meta:
         model = Package
         

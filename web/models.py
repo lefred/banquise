@@ -42,19 +42,20 @@ class Host(models.Model):
     packages_to_update = lambda x:  ServerPackages.objects.filter(host=x,package_installed=0,package_skipped=0).count()
 
     def __str__(self):
-       return self.name
+        return self.name
 
 class Package(models.Model):
     name = models.CharField(max_length=80)
     arch = models.CharField(max_length=10)
     version = models.CharField(max_length=50)
     release = models.CharField(max_length=50)
+    repo = models.CharField(max_length=50,blank=True)
 
     class Meta:
         unique_together = ('name', 'arch', 'version', 'release',)
 
     def __str__(self):
-       return self.name + '-' + self.arch + '.' + self.version + '.' + self.release
+        return self.name + '-' + self.arch + '.' + self.version + '.' + self.release
 
 class ServerPackages(models.Model):
     package = models.ForeignKey(Package)
@@ -64,6 +65,7 @@ class ServerPackages(models.Model):
     date_installed = models.DateTimeField(blank=True,null=True)
     to_install = models.BooleanField() 
     package_skipped = models.BooleanField()
+    new_install = models.BooleanField()
     
     def __str__(self):
-       return str(self.package) + '-' + str(self.host)
+        return str(self.package) + '-' + str(self.host)
