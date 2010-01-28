@@ -132,6 +132,11 @@ def list_packages(request, host_id=""):
             for pack in packages:
                 pack.to_install = True
                 pack.save()
+        elif request.POST.get('skip'):
+            for pack in packages:
+                pack.package_skipped = True
+                pack.date_installed=datetime.today()
+                pack.save()
         else:
             for pack in packages:
                 if str(pack.id) not in to_install and str(pack.id) in pack_in_page:
@@ -140,7 +145,7 @@ def list_packages(request, host_id=""):
                         pack.save()
             for id in to_install:
                 p = ServerPackages.objects.get(id=id)
-                p.to_install = True
+                pto_install = True
                 p.save()
         packages = ServerPackages.objects.filter(host=host,date_installed__isnull=True,package_skipped=0).order_by('package__name')
     paginator = Paginator(packages, 25)
