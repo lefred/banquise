@@ -135,6 +135,7 @@ def list_packages(request, host_id=""):
         elif request.POST.get('skip'):
             for pack in packages:
                 pack.package_skipped = True
+                pack.to_install = False
                 pack.date_installed=datetime.today()
                 pack.save()
         else:
