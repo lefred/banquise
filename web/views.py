@@ -170,7 +170,7 @@ def list_packages(request, host_id=""):
         packages_installed_list = paginator_history.page(paginator_history.num_pages)
 
     t = loader.get_template('packages.html')
-    c = RequestContext(request, _get_default_context({'packages':packages_list,'packages_installed':packages_installed_list}))
+    c = RequestContext(request, _get_default_context({'host':host,'packages':packages_list,'packages_installed':packages_installed_list}))
 
     return HttpResponse(t.render(c))
 

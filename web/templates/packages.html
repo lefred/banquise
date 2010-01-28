@@ -1,6 +1,7 @@
 {% extends "index.html" %}
 {%load smart_if%}
 {% block content %}
+<h3>{{ host.name }} - {{ host.release }}</h3> 
 <div id='packages'>
     <form method='POST'>
         <input type='submit' value='update'>
