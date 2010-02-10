@@ -400,6 +400,46 @@ def call_send_update(request):
         packages_install_list.append("%s,%s,%s,%s" % (package.package.name,package.package.arch,package.package.version,package.package.release))
     json_value = json.dumps(packages_install_list)
     return HttpResponse(json_value, mimetype="application/javascript") 
+
+def call_send_sync(request):
+    uuid = request.POST[u'uuid']
+    host = Host.objects.get(hash=uuid)
+    packages = request.POST[u'packages']      
+    tot_added=0
+    tot_updated=0
+    tot_synced=0
+    # TODO
+    # check first if in the list of packages installed in banquise db there
+    # are packages that are not more installed on the machine
+    # but keep in mind that is package aaa.1 is installed, then package aaa.2
+    # is installed too, we need to check if aaa.2 is not more installed (from
+    # the sync) we need to remove it
+    for package in json.loads(packages):
+        tab = package.split(",")
+        # find the package
+        try:
+            pack = Package.objects.get(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])
+            # is there a link between the package and the server ?    
+            try:
+                servpack = ServerPackages.objects.get(host=host,package=pack)
+                if not servpack.date_installed:
+                    servpack.date_synced=datetime.today()
+                    servpack.date_installed=datetime.today()
+                    servpack.save()
+                    tot_synced=tot_synced+1
+                   
+            except (ServerPackages.DoesNotExist):
+                servpack = ServerPackages(host=host,package=pack,date_available=datetime.today(),date_synced=datetime.today())
+                servpack.save()
+                tot_updated=tot_updated+1
+        except (Package.DoesNotExist):
+            pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3],repo=tab[4])
+            pack.save()
+            tot_added=tot_added+1
+            # create a link with the server
+            servpack = ServerPackages(host=host,package=pack,date_available=datetime.today(),date_synced=datetime.today())
+            servpack.save()
+    return HttpResponse("synced : %s updated, %s added, %s synced" % (tot_updated,tot_added,tot_synced))
         
 def call_setup(request):
     # search it there is a contract on which we can attach the host

@@ -63,9 +63,11 @@ class ServerPackages(models.Model):
     package_installed = models.BooleanField()
     date_available = models.DateTimeField(blank=True,null=True)
     date_installed = models.DateTimeField(blank=True,null=True)
+    date_synced = models.DateTimeField(blank=True,null=True)
     to_install = models.BooleanField() 
     package_skipped = models.BooleanField()
     new_install = models.BooleanField()
+    removed = models.BooleanField()
     
     def __str__(self):
         return str(self.package) + '-' + str(self.host)
