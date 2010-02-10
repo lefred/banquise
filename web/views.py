@@ -425,6 +425,7 @@ def call_send_sync(request):
                 if not servpack.date_installed:
                     servpack.date_synced=datetime.today()
                     servpack.date_installed=datetime.today()
+                    servpack.package_installed=1
                     servpack.save()
                     tot_synced=tot_synced+1
                    
