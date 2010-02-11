@@ -64,17 +64,22 @@
         <th>release</th>
         <th>available since</th>
         <th>installed date</th>
+        <th>sync date</th>
     </tr>
     
     {% for pack in packages_installed.object_list %}
-    {% if not pack.package_skipped %} <tr class='packagesinstalled'> {% endif %}
-    {% if pack.package_skipped %} <tr class='packagesskipped'> {% endif %}
+    {% if pack.removed %} <tr class='packagesdeleted'> 
+    {% else %}
+     {% if not pack.package_skipped %} <tr class='packagesinstalled'> {% endif %}
+     {% if pack.package_skipped %} <tr class='packagesskipped'> {% endif %}
+    {% endif %} 
         <td>{{ pack.package.name  }}</td>
         <td>{{ pack.package.arch }}</td>
         <td>{{ pack.package.version }}</td>
         <td>{{ pack.package.release }}</td>
         <td>{{ pack.date_available }}</td>
         <td>{% if pack.package_skipped %} skipped on {% endif %}{{ pack.date_installed }}</td>
+        <td>{{ pack.date_synced }}</td>
     </tr>
    {% endfor %}
 </table>

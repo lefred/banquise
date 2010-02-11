@@ -43,9 +43,12 @@
     </tr>
     
     {% for pack in link_packages %}
-      {% if not pack.date_installed %} <tr class='packagestoinstall'> {% endif %}
+      {% if not pack.date_installed and not pack.removed %} <tr class='packagestoinstall'> {% endif %}
+      {% if pack.removed %} <tr class='packagesdeleted'> 
+      {% else %}
       {% if not pack.skipped and pack.date_installed %} <tr class='packagesinstalled'> {% endif %}
       {% if pack.skipped and pack.date_installed %} <tr class='packagesskipped'> {% endif %}
+      {% endif %}
         <td>{{ pack.host.name  }}</td>
         <td>{{ pack.date_available }}</td>
         <td>{% if pack.skipped %} skipped on {% endif %} 
@@ -55,11 +58,18 @@
                   <input type="submit" name="update" value="update"> 
                </form>
              {% else %}
+             {% if pack.removed %}
+               <form method="POST">
+                  was removed<input type="hidden" name="to_install" value="{{ pack.id }}"> 
+                  <input type="submit" name="update" value="update"> 
+               </form>  
+             {% else %}
                {% if not pack.date_installed %}
                   pending
                {% else %}
                  {{ pack.date_installed }}
                {% endif %} 
+            {% endif %}
             {% endif %}
         </td>
       </tr>

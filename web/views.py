@@ -146,7 +146,7 @@ def list_packages(request, host_id=""):
                         pack.save()
             for id in to_install:
                 p = ServerPackages.objects.get(id=id)
-                pto_install = True
+                p.to_install = True
                 p.save()
         packages = ServerPackages.objects.filter(host=host,date_installed__isnull=True,package_skipped=0).order_by('package__name')
     paginator = Paginator(packages, 25)
@@ -333,9 +333,7 @@ def call_packs_done(request):
 
 def call_send_list(request):
     uuid = request.POST[u'uuid']
-    host = Host.objects.get(hash=uuid)
     packages = request.POST[u'packages']      
-    packages_add_list = [] 
     login = request.POST[u'login']
     passwd = request.POST[u'passwd'] 
     user = authenticate(username=login, password=passwd)
@@ -405,18 +403,23 @@ def call_send_sync(request):
     uuid = request.POST[u'uuid']
     host = Host.objects.get(hash=uuid)
     packages = request.POST[u'packages']      
+    list_of_packages=[]
     tot_added=0
     tot_updated=0
     tot_synced=0
+    tot_deleted=0
     # TODO
     # check first if in the list of packages installed in banquise db there
     # are packages that are not more installed on the machine
     # but keep in mind that is package aaa.1 is installed, then package aaa.2
     # is installed too, we need to check if aaa.2 is not more installed (from
     # the sync) we need to remove it
+    packages_installed = ServerPackages.objects.filter(host=host,date_installed__isnull=False).order_by('package__name')
     for package in json.loads(packages):
         tab = package.split(",")
+        list_of_packages.append(tab[0])
         # find the package
+        
         try:
             pack = Package.objects.get(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])
             # is there a link between the package and the server ?    
@@ -440,7 +443,17 @@ def call_send_sync(request):
             # create a link with the server
             servpack = ServerPackages(host=host,package=pack,date_available=datetime.today(),date_synced=datetime.today())
             servpack.save()
-    return HttpResponse("synced : %s updated, %s added, %s synced" % (tot_updated,tot_added,tot_synced))
+    for package in packages_installed: 
+        if str(package.package.name) not in list_of_packages:
+            if package.to_install:
+                print package.package.name
+                tot_deleted=tot_deleted+1
+                package.removed=1
+                package.package_installed=0
+                package.to_install=0
+                package.date_synced=datetime.today()
+                package.save()
+    return HttpResponse("synced : %s updated, %s added, %s synced, %s deleted" % (tot_updated,tot_added,tot_synced,tot_deleted))
         
 def call_setup(request):
     # search it there is a contract on which we can attach the host

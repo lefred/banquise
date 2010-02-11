@@ -192,6 +192,11 @@ a:hover {
 		background-color: #ff9d9d;
 } 
 
+.packagesdeleted {
+        background-color: #434d77;
+} 
+
+
 #right {
 	float:right;
 	width:250px;
