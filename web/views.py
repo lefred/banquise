@@ -233,7 +233,6 @@ def form_packages(request):
     pack_id=""
     ok=0
     if request.POST.get("to_install"):
-        print "install " +str(request.POST.get("to_install")) 
         serv_package=ServerPackages.objects.get(id=request.POST.get("to_install"))
         serv_package.to_install=1
         serv_package.save()
@@ -394,7 +393,6 @@ def call_send_update(request):
             #packages_install_list.append("|")
     packages = ServerPackages.objects.filter(host=host,to_install=1,package_installed=0,new_install=0)
     for package in packages:
-        #print "needs to be installed : %s,%s,%s,%s" % (package.package.name,package.package.arch,package.package.version,package.package.release)  
         packages_install_list.append("%s,%s,%s,%s" % (package.package.name,package.package.arch,package.package.version,package.package.release))
     json_value = json.dumps(packages_install_list)
     return HttpResponse(json_value, mimetype="application/javascript") 
@@ -408,12 +406,7 @@ def call_send_sync(request):
     tot_updated=0
     tot_synced=0
     tot_deleted=0
-    # TODO
-    # check first if in the list of packages installed in banquise db there
-    # are packages that are not more installed on the machine
-    # but keep in mind that is package aaa.1 is installed, then package aaa.2
-    # is installed too, we need to check if aaa.2 is not more installed (from
-    # the sync) we need to remove it
+    
     packages_installed = ServerPackages.objects.filter(host=host,date_installed__isnull=False).order_by('package__name')
     for package in json.loads(packages):
         tab = package.split(",")
@@ -446,7 +439,6 @@ def call_send_sync(request):
     for package in packages_installed: 
         if str(package.package.name) not in list_of_packages:
             if package.to_install:
-                print package.package.name
                 tot_deleted=tot_deleted+1
                 package.removed=1
                 package.package_installed=0
