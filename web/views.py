@@ -14,9 +14,7 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.db.models.query import QuerySet
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
-
-
-
+from django.contrib.auth import logout
 
 def _get_default_context(dict_in):
     """Returns a :class:`dict` containing all the needed variables for the context
@@ -270,6 +268,12 @@ def form_packages(request):
     c = RequestContext(request, scope)
 
     return HttpResponse(t.render(c))
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect('/')
+
+
 
 # REST methods
 def call_test(request):

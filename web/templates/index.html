@@ -15,6 +15,9 @@
 </head>
 <body>
 <div id="top"><img src='/media/images/banquise.png'>
+{% if user.is_authenticated %}
+<div id="log">you are logged as {{user}} - <a href='/web/accounts/logout/'>logout</a></div>
+{% endif %}
 <div id="header">
 <ul>
 	<li {% if tab_customer %}id="selected" {% endif %}><a href="/web/list/customers/">customers</a></li>

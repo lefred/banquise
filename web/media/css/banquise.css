@@ -210,6 +210,19 @@ a:hover {
     padding-top: 23px;
 }
 
+#log {
+    position:absolute;
+    top:95;
+    right:5;
+    color: #fff;
+	font-size: 10px;
+}
+
+#log a {
+    color: #fff;
+}
+
+
 #header ul {
 		list-style: none;
 		padding: 0;
