@@ -59,6 +59,7 @@ def server_package(request,package_id=''):
     t = loader.get_template('ServerPackage.html')
     scope = _get_default_context({'package':package,
                                   'host_list':host_list,
+                                  'tab_package': True,
                                   })
     c = RequestContext(request, scope)
     return HttpResponse(t.render(c))
@@ -87,6 +88,7 @@ def list_customers(request):
     scope = _get_default_context({'customers':customers,
                                   'action':action,
                                   'form':form,
+                                  'tab_customer': True,
                                   })
 
     c = RequestContext(request, scope)
@@ -99,7 +101,6 @@ def list_hosts(request, contract_id=""):
     :param request: :class:`django.http.HttpRequest` given by the framework
     :type request: :class:`django.http.Request`
     """
-
     if contract_id.isdigit():
         hosts = Host.objects.filter(C_h_H=contract_id)
     else:
@@ -107,7 +108,7 @@ def list_hosts(request, contract_id=""):
     #contracts = Contract.objects.all()
 
     t = loader.get_template('hosts.htm')
-    c = RequestContext(request, _get_default_context({'hosts':hosts,}))
+    c = RequestContext(request, _get_default_context({'hosts':hosts,'tab_host': True}))
 
     return HttpResponse(t.render(c))
 
@@ -170,7 +171,8 @@ def list_packages(request, host_id=""):
         packages_installed_list = paginator_history.page(paginator_history.num_pages)
 
     t = loader.get_template('packages.html')
-    c = RequestContext(request, _get_default_context({'host':host,'packages':packages_list,'packages_installed':packages_installed_list}))
+    c = RequestContext(request, _get_default_context({'host':host,'packages':packages_list,'packages_installed':packages_installed_list,
+                       'tab_host': True,}))
 
     return HttpResponse(t.render(c))
 
@@ -216,6 +218,7 @@ def details_customer(request, customer_id):
                                   'action':action,
                                   'form':form,
                                   'valid_contracts':valid_contracts,
+                                  'tab_customer': True,
                                   'old_contracts':old_contracts,})
     c = RequestContext(request, scope)
 
@@ -254,7 +257,7 @@ def form_packages(request):
         link_packages = ServerPackages.objects.filter(package=packages).order_by('package__name')
         
     t = loader.get_template('packageForm.html')
-    scope = _get_default_context({'pack_detail':pack_id,'form':form,'packages':packages,'link_packages':link_packages})
+    scope = _get_default_context({'tab_package': True,'pack_detail':pack_id,'form':form,'packages':packages,'link_packages':link_packages})
     c = RequestContext(request, scope)
 
     return HttpResponse(t.render(c))

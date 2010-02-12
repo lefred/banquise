@@ -17,9 +17,9 @@
 <div id="top"><img src='/media/images/banquise.png'>
 <div id="header">
 <ul>
-	<li id="selected"><a href="/web/list/customers/">customers</a></li>
-	<li><a href="/web/list/hosts/">hosts</a></li>
-	<li><a href="/web/list/packages/">packages</a></li>
+	<li {% if tab_customer %}id="selected" {% endif %}><a href="/web/list/customers/">customers</a></li>
+	<li {% if tab_host %}id="selected" {% endif %}><a href="/web/list/hosts/">hosts</a></li>
+	<li {% if tab_package %}id="selected" {% endif %}><a href="/web/list/packages/">packages</a></li>
 </ul>
 <!--
 <div id="right">Search: </div>
