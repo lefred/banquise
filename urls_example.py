@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     (r'^media/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': '/var/www/banquise/web/media', 'show_indexes': True}),
 
+    (r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
     (r'^$', 'banquise.web.views.list_hosts'),
 
 )

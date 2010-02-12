@@ -13,6 +13,9 @@ from django.core import serializers
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.db.models.query import QuerySet
 from django.contrib.auth import authenticate
+from django.contrib.auth.decorators import login_required
+
+
 
 
 def _get_default_context(dict_in):
@@ -37,6 +40,7 @@ def index(request):
 
     return HttpResponse(t.render(c))
 
+@login_required
 def server_package(request,package_id=''):
     package=Package.objects.get(id=package_id)
     link_packages = ServerPackages.objects.filter(package=package).order_by('package__name')
@@ -65,6 +69,7 @@ def server_package(request,package_id=''):
     return HttpResponse(t.render(c))
 
     
+@login_required
 def list_customers(request):
     """Return a list of :class:`Customer` objects
 
@@ -95,6 +100,7 @@ def list_customers(request):
 
     return HttpResponse(t.render(c))
 
+@login_required
 def list_hosts(request, contract_id=""):
     """Return a :class:`django.db.models.query.QuerySet` of :class:`Host` objects
 
@@ -112,6 +118,7 @@ def list_hosts(request, contract_id=""):
 
     return HttpResponse(t.render(c))
 
+@login_required
 def list_packages(request, host_id=""):
     """Return a :class:`django.db.models.query.QuerySet` of :class:`Package` objects
 
@@ -177,6 +184,7 @@ def list_packages(request, host_id=""):
     return HttpResponse(t.render(c))
 
 
+@login_required
 def details_customer(request, customer_id):
     """Return a :class:`django.db.models.query.QuerySet` of :class:`Customer` objects
 
@@ -224,6 +232,7 @@ def details_customer(request, customer_id):
 
     return HttpResponse(t.render(c))
 
+@login_required
 def form_packages(request):
     """Return a :class:`django.db.models.query.QuerySet` of :class:`Package` objects
 
