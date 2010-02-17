@@ -50,6 +50,8 @@ class Package(models.Model):
     version = models.CharField(max_length=50)
     release = models.CharField(max_length=50)
     repo = models.CharField(max_length=50,blank=True)
+    type = models.CharField(max_length=15,blank=True)
+    update_id = models.CharField(max_length=50,blank=True)
 
     class Meta:
         unique_together = ('name', 'arch', 'version', 'release',)

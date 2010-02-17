@@ -385,6 +385,8 @@ def call_send_update(request):
                 servpack.save()
         except (Package.DoesNotExist):
             pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3],repo=tab[4])
+            pack.type=tab[5]
+            pack.update_id=tab[6]
             pack.save()
             # create a link with the server
             servpack = ServerPackages(host=host,package=pack,date_available=datetime.today())

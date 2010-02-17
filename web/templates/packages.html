@@ -14,6 +14,7 @@
         <th>version</th>
         <th>release</th>
         <th>available since</th>
+        <th>type</th>
         <th>to install</th>
     </tr>
     
@@ -26,7 +27,8 @@
         <td>{{ pack.package.version }}</td>
         <td>{{ pack.package.release }}</td>
         <td>{{ pack.date_available }}</td>
-        <td>{% if not pack.date_installed %}
+        <td align='center'><img src='/media/images/icons/{{ pack.package.type }}.png' title='{{ pack.package.update_id }} : {{ pack.package.type }}'></td>
+        <td align='center'>{% if not pack.date_installed %}
             {% if not pack.to_install %}
             <input type="checkbox" value="{{ pack.id }}" name="to_install" />
             {% else %}
