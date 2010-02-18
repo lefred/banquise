@@ -366,6 +366,12 @@ def call_send_list(request):
             pack = Package.objects.get(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])
         except (Package.DoesNotExist):
             pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])
+            if len(tab) > 5:
+                pack.type=tab[5]
+                pack.update_id=tab[6]
+            else:
+                pack.type="na"
+                pack.update_id="n/a"
             pack.save()
 
     return HttpResponse("Ok")
@@ -453,6 +459,13 @@ def call_send_sync(request):
                 tot_updated=tot_updated+1
         except (Package.DoesNotExist):
             pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3],repo=tab[4])
+            if len(tab) > 5:
+                pack.type=tab[5]
+                pack.update_id=tab[6]
+            else:
+                pack.type="na"
+                pack.update_id="n/a"
+            
             pack.save()
             tot_added=tot_added+1
             # create a link with the server
