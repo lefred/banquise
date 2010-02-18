@@ -398,8 +398,12 @@ def call_send_update(request):
                 servpack.save()
         except (Package.DoesNotExist):
             pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3],repo=tab[4])
-            pack.type=tab[5]
-            pack.update_id=tab[6]
+            if len(tab) > 5:
+                pack.type=tab[5]
+                pack.update_id=tab[6]
+            else:
+                pack.type="na"
+                pack.update_id="n/a"
             pack.save()
             # create a link with the server
             servpack = ServerPackages(host=host,package=pack,date_available=datetime.today())
