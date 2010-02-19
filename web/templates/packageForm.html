@@ -16,6 +16,8 @@
         <th>version</th>
         <th>release</th>
         <th>repo</th>
+        <th>type</th>
+        <th>updateID</th>
         <th>more</th>
     </tr>
     
@@ -26,6 +28,8 @@
         <td>{{ pack.version }}</td>
         <td>{{ pack.release }}</td>
         <td>{{ pack.repo }}</td>
+        <td><img src='/media/images/icons/{{ pack.type }}.png' title='{{ pack.update_id }} : {{ pack.type }}'></td>
+        <td>{{ pack.update_id }}</td>
         <td><a href="?id={{ pack.id }}"><img src='/media/images/icons/add.png' height='16' border='0'></a>
     </tr>
    {% endfor %}
@@ -52,7 +56,7 @@
         <td>{{ pack.host.name  }}</td>
         <td>{{ pack.date_available }}</td>
         <td>{% if pack.skipped %} skipped on {% endif %} 
-            {% if not pack.date_installed and not pack.to_install %}
+            {% if not pack.package_installed and not pack.to_install %}
                <form method="POST">
                   <input type="hidden" name="to_install" value="{{ pack.id }}"> 
                   <input type="submit" name="update" value="update"> 
@@ -64,10 +68,14 @@
                   <input type="submit" name="update" value="update"> 
                </form>  
              {% else %}
-               {% if not pack.date_installed %}
+               {% if not pack.package_installed %}
                   pending
                {% else %}
-                 {{ pack.date_installed }}
+                 {% if pack.date_installed %}
+                    {{ pack.date_installed }}
+                 {% else %}
+                    via sync
+                 {% endif %}
                {% endif %} 
             {% endif %}
             {% endif %}

@@ -28,7 +28,7 @@
         <td>{{ pack.package.release }}</td>
         <td>{{ pack.date_available }}</td>
         <td align='center'><img src='/media/images/icons/{{ pack.package.type }}.png' title='{{ pack.package.update_id }} : {{ pack.package.type }}'></td>
-        <td align='center'>{% if not pack.date_installed %}
+        <td align='center'>{% if not pack.package_installed %}
             {% if not pack.to_install %}
             <input type="checkbox" value="{{ pack.id }}" name="to_install" />
             {% else %}

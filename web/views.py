@@ -48,7 +48,7 @@ def server_package(request,package_id=''):
                                   to_install=1,new_install=1)
             servpack.save()
         return HttpResponseRedirect("/web/list/packages/?id=%s" % (package_id))
-
+    
     hosts = Host.objects.all()
     host_list=[]
     host_installed=[]
@@ -126,8 +126,8 @@ def list_packages(request, host_id=""):
 
     #this doesn't work yet
     host = get_object_or_404(Host,pk=host_id)
-    packages = ServerPackages.objects.filter(host=host,date_installed__isnull=True,package_skipped=0).order_by('package__name')
-    packages_installed = ServerPackages.objects.filter(host=host,date_installed__isnull=False).order_by('package__name')
+    packages = ServerPackages.objects.filter(host=host,date_installed__isnull=True,package_installed=0,package_skipped=0).order_by('package__name')
+    packages_installed = ServerPackages.objects.filter(host=host,package_installed=True).order_by('package__name')
 
     if request.method=='POST':
         to_install = request.POST.getlist('to_install')
@@ -154,7 +154,7 @@ def list_packages(request, host_id=""):
                 p = ServerPackages.objects.get(id=id)
                 p.to_install = True
                 p.save()
-        packages = ServerPackages.objects.filter(host=host,date_installed__isnull=True,package_skipped=0).order_by('package__name')
+        packages = ServerPackages.objects.filter(host=host,date_installed__isnull=True,package_installed=0,package_skipped=0).order_by('package__name')
     paginator = Paginator(packages, 25)
     try:
         page = int(request.GET.get('page', '1'))
@@ -365,7 +365,7 @@ def call_send_list(request):
         try:
             pack = Package.objects.get(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])
         except (Package.DoesNotExist):
-            pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])
+            pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3],repo=tab[4])
             if len(tab) > 5:
                 pack.type=tab[5]
                 pack.update_id=tab[6]
@@ -470,6 +470,7 @@ def call_send_sync(request):
             tot_added=tot_added+1
             # create a link with the server
             servpack = ServerPackages(host=host,package=pack,date_available=datetime.today(),date_synced=datetime.today())
+            servpack.package_installed=1
             servpack.save()
     for package in packages_installed: 
         if str(package.package.name) not in list_of_packages:
