@@ -27,7 +27,14 @@
         <td>{{ pack.package.version }}</td>
         <td>{{ pack.package.release }}</td>
         <td>{{ pack.date_available }}</td>
-        <td align='center'><img src='/media/images/icons/{{ pack.package.type }}.png' title='{{ pack.package.update_id }} : {{ pack.package.type }}'></td>
+        <td align='center'>
+        {% if pack.package.metainfo.id %}
+        <a href='/web/list/metainfo/{{ pack.package.id }}/{{ pack.package.metainfo.id }}/'>
+        <img src='/media/images/icons/{{ pack.package.type }}.png' title='{{ pack.package.metainfo.updateid }} : {{ pack.package.type }}' border='0'></td>
+        </a>
+        {% else %}
+        <img src='/media/images/icons/{{ pack.package.type }}.png' title='{{ pack.package.metainfo.updateid }} : {{ pack.package.type }}' border='0'></td>
+        {% endif %}
         <td align='center'>{% if not pack.package_installed %}
             {% if not pack.to_install %}
             <input type="checkbox" value="{{ pack.id }}" name="to_install" />

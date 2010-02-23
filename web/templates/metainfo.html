@@ -1,0 +1,49 @@
+{% extends "index.html" %}
+{% block content %}
+<div id='metainfo_back'><a href="javascript:history.go(-1)">back</a></div>
+<div id="metainfo">
+<h3>{{ package.name }}-{{ package.version }}-{{ package.release }}.{{ package.arch }}</h3>
+<table>
+<tr>
+ <td width='20%'>update ID :</td>
+ <td>{{ metainfo.updateid }}</td>
+</tr>
+<tr>
+ <td>status :</td>
+ <td>{{ metainfo.status }}</td>
+</tr>
+<tr>
+ <td>type :</td>
+ <td>{{ metainfo.type }}&nbsp;&nbsp;<img src='/media/images/icons/{{ metainfo.type }}.png'></td>
+</tr>
+<tr>
+ <td>description :</td>
+ <td><pre>{{ metainfo.description }}</pre></td>
+</tr>
+</table>
+</div>
+<div id="metabug">
+<table>
+{% for metabug in metabugs %}
+<tr>
+ <td class="metabugid" width="10%">id :</td>
+ <td class="metabugid">{{ metabug.bugid }}</td>
+</tr>
+<tr>
+ <td>title :</td>
+ <td>{{ metabug.title }}</td>
+</tr>
+<tr>
+<tr>
+ <td>type :</td>
+ <td>{{ metabug.type }}</td>
+</tr>
+ <td>href :</td>
+ <td><a href='{{ metabug.href }}' target='_new'>{{ metabug.href }}</a></td>
+</tr>
+{% endfor %}
+</table>
+</div>
+<div id='metainfo_back'><a href="javascript:history.go(-1)">back</a></div>
+
+{% endblock %}

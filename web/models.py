@@ -44,6 +44,26 @@ class Host(models.Model):
     def __str__(self):
         return self.name
 
+class MetaInfo(models.Model):
+    updateid = models.CharField(max_length=50)
+    status = models.CharField(max_length=20)
+    type = models.CharField(max_length=20)
+    description = models.TextField()
+    
+    def __str__(self):
+        return str(self.updateid)
+
+class MetaBug(models.Model):
+    bugid = models.CharField(max_length=50)
+    href = models.CharField(max_length=250)
+    type = models.CharField(max_length=20)
+    title = models.TextField()
+    metainfo=models.ForeignKey(MetaInfo, null=True)
+    
+    def __str__(self):
+        return str(self.bugid)
+
+
 class Package(models.Model):
     name = models.CharField(max_length=80)
     arch = models.CharField(max_length=10)
@@ -51,8 +71,7 @@ class Package(models.Model):
     release = models.CharField(max_length=50)
     repo = models.CharField(max_length=50,blank=True)
     type = models.CharField(max_length=15,blank=True)
-    update_id = models.CharField(max_length=50,blank=True)
-
+    metainfo=models.ForeignKey(MetaInfo,null=True,blank=True)
     class Meta:
         unique_together = ('name', 'arch', 'version', 'release',)
 
@@ -73,3 +92,4 @@ class ServerPackages(models.Model):
     
     def __str__(self):
         return str(self.package) + '-' + str(self.host)
+

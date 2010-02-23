@@ -28,8 +28,16 @@
         <td>{{ pack.version }}</td>
         <td>{{ pack.release }}</td>
         <td>{{ pack.repo }}</td>
-        <td><img src='/media/images/icons/{{ pack.type }}.png' title='{{ pack.update_id }} : {{ pack.type }}'></td>
-        <td>{{ pack.update_id }}</td>
+        <td>
+        {% if pack.metainfo.id %}
+        <a href='/web/list/metainfo/{{ pack.id }}/{{ pack.metainfo.id }}/'>
+        <img src='/media/images/icons/{{ pack.type }}.png' title='{{ pack.metainfo.updateid }} : {{ pack.type }}' border='0'></td>
+        </a>
+        {% else %}
+        <img src='/media/images/icons/{{ pack.type }}.png' title='{{ pack.metainfo.updateid }} : {{ pack.type }}' border='0'></td>
+        {% endif %}
+        </td>
+        <td>{{ pack.metainfo.updateid }}</td>
         <td><a href="?id={{ pack.id }}"><img src='/media/images/icons/add.png' height='16' border='0'></a>
     </tr>
    {% endfor %}

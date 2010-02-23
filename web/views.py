@@ -6,7 +6,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.template import RequestContext,loader
-from banquise.web.models import Customer, Host, Package, ServerPackages, Contract
+from banquise.web.models import Customer, Host, Package, ServerPackages, Contract, MetaInfo, MetaBug
 from banquise.web.forms import ContractForm, PackageForm, CustomerForm
 from django.utils import simplejson
 from django.core import serializers
@@ -64,6 +64,27 @@ def server_package(request,package_id=''):
                                   'tab_package': True,
                                   })
     c = RequestContext(request, scope)
+    return HttpResponse(t.render(c))
+
+@login_required
+def list_metainfo(request,package_id='',metainfo_id=''):
+    """Return a list of :class:`MetaInfo` objects
+
+    :param request: :class:`django.http.HttpRequest` given by the framework
+    :type request: :class:`django.http.Request`
+    """
+    package = get_object_or_404(Package,pk=package_id)
+    metainfo = get_object_or_404(MetaInfo,pk=metainfo_id)
+    metabugs = MetaBug.objects.filter(metainfo=metainfo).order_by('bugid')
+    t = loader.get_template('metainfo.html')
+    scope = _get_default_context({'package': package,
+                                  'metainfo': metainfo,
+                                  'metabugs': metabugs,
+                                  'tab_host': True,
+                                  })
+
+    c = RequestContext(request, scope)
+
     return HttpResponse(t.render(c))
 
     
@@ -360,6 +381,7 @@ def call_send_list(request):
     if not user.is_staff:
         return HttpResponse("You are not allowed to use this command.")
     
+#    parseMeta(metainfo,metabug)           
     for package in json.loads(packages):
         tab = package.split(",")
         try:
@@ -368,10 +390,11 @@ def call_send_list(request):
             pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3],repo=tab[4])
             if len(tab) > 5:
                 pack.type=tab[5]
-                pack.update_id=tab[6]
+                if tab[6] != "none":
+                    my_metainfo=MetaInfo.objects.get(updateid=str(tab[6]))
+                    pack.metainfo=my_metainfo
             else:
                 pack.type="na"
-                pack.update_id="n/a"
             pack.save()
 
     return HttpResponse("Ok")
@@ -385,12 +408,17 @@ def call_send_install(request):
         packages_install_list.append("%s,%s,%s,%s" % (package.package.name,package.package.arch,package.package.version,package.package.release))
     json_value = json.dumps(packages_install_list)
     return HttpResponse(json_value, mimetype="application/javascript") 
-         
+
+             
 def call_send_update(request):
     uuid = request.POST[u'uuid']
     host = Host.objects.get(hash=uuid)
     packages = request.POST[u'packages']      
+    metainfo = request.POST[u'metainfo']
+    metabug = request.POST[u'metabug']
     packages_install_list = [] 
+    parseMetaInfo(metainfo)
+    parseMetaBug(metabug)           
     for package in json.loads(packages):
         tab = package.split(",")
         # find the package
@@ -406,10 +434,12 @@ def call_send_update(request):
             pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3],repo=tab[4])
             if len(tab) > 5:
                 pack.type=tab[5]
-                pack.update_id=tab[6]
+                updateid=tab[6]
+                if updateid != 'none':
+                    my_metainfo=MetaInfo.objects.get(updateid=str(tab[6]))
+                    pack.metainfo=my_metainfo
             else:
                 pack.type="na"
-                pack.update_id="n/a"
             pack.save()
             # create a link with the server
             servpack = ServerPackages(host=host,package=pack,date_available=datetime.today())
@@ -459,12 +489,8 @@ def call_send_sync(request):
                 tot_updated=tot_updated+1
         except (Package.DoesNotExist):
             pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3],repo=tab[4])
-            if len(tab) > 5:
-                pack.type=tab[5]
-                pack.update_id=tab[6]
-            else:
-                pack.type="na"
-                pack.update_id="n/a"
+            pack.type="na"
+            pack.updateid="n/a"
             
             pack.save()
             tot_added=tot_added+1
@@ -512,3 +538,66 @@ def call_setup(request):
     #json_value = serializers.serialize('json',contract)
     #return HttpResponse(json_value, mimetype="application/javascript") 
     return HttpResponse(host.hash)
+
+def call_send_metainfo(request):
+    parseMetaInfo(request.POST[u'metainfo'])
+    return HttpResponse("metainfo saved") 
+
+def call_send_metabug(request): 
+    parseMetaBug(request.POST[u'metabug'],True)
+    return HttpResponse("metabug saved") 
+    
+def parseMetaInfo(metainfo):
+    metadata=json.loads(metainfo)
+    if not isinstance(metadata,list):
+        metadata_list=[]
+        metadata_list.append(metadata)
+        metadata=metadata_list
+    for data in metadata:
+        for meta in data.iteritems():
+            # insert the metainfo if needed
+            try: 
+                my_metainfo = MetaInfo.objects.get(updateid=str(meta[0]))
+            except (MetaInfo.DoesNotExist):
+                my_metainfo = MetaInfo()
+                my_metainfo.updateid=meta[0]
+                if meta[1]:
+                    if meta[1][0]:
+                        my_metainfo.type=meta[1][0]
+                    if meta[1][1]:
+                        my_metainfo.status=meta[1][1]
+                    if meta[1][2]:
+                        my_metainfo.description=meta[1][2]
+                my_metainfo.save()
+    return True
+                
+def parseMetaBug(metabug,onerecord=False):
+    # save the bug info            
+    if onerecord:
+        metadata=[]
+        metadata.append(json.loads(metabug))
+    else:
+        metadata=json.loads(metabug)
+    if metadata: 
+        for data in metadata:
+            if data: 
+                #find the metainfo
+                if data[1]:
+                    my_metainfo = MetaInfo.objects.get(updateid=str(data[0]))
+                    # insert the metainfo if needed
+                    for ref in data[1]:
+                        try: 
+                            my_metabug = MetaBug.objects.get(metainfo=my_metainfo,bugid=ref['id'])
+                        except (MetaBug.DoesNotExist):
+                            my_metabug = MetaBug()
+                            my_metabug.metainfo=my_metainfo
+                            if ref['href']:
+                                my_metabug.href=ref['href']
+                            if ref['id']:
+                                my_metabug.bugid=ref['id']
+                            if ref['type']:
+                                my_metabug.type=ref['type']    
+                            if ref['title']:
+                                my_metabug.title=ref['title']    
+                            my_metabug.save()
+    return True

@@ -94,6 +94,91 @@ a:hover {
 		border-bottom: 1px dashed #6d90c2;
 }
 
+#metainfo {
+        margin-left: 350px;
+}
+
+#metainfo a:link, a:visited{
+        color: #6d90c2;
+}
+
+#metainfo h2, h3{
+        color: black;
+}
+#metainfo table {
+        border-collapse:collapse;
+        width: 85%;
+        padding: 10;
+        margin: 10;
+        border: 2px solid #6d90c2;
+}
+
+#metainfo th {
+        font-size: 14px;
+        text-align: left;
+        padding: 7;
+}
+
+#metainfo td {
+        font-size: 14px;
+        color: #6d90c2;
+        padding: 7;
+        border-bottom: 1px dashed #6d90c2;
+}
+
+#metainfo pre {
+    white-space: -moz-pre-wrap; /* Mozilla, supported since 1999 */
+    white-space: -pre-wrap; /* Opera 4 - 6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    white-space: pre-wrap; /* CSS3 - Text module (Candidate Recommendation) http://www.w3.org/TR/css3-text/#white-space */
+    word-wrap: break-word; /* IE 5.5+ */
+}
+
+#metainfo_back {
+        font-size: 14px;
+        color: #6d90c2;
+        padding: 7;
+        text-align: right;
+}
+
+#metainfo_back a:link, a:visited{
+        color: #6d90c2;
+}
+
+#metabug {
+        margin-left: 350px;
+}
+
+#metabug table {
+        border-collapse:collapse;
+        width: 85%;
+        padding: 10;
+        margin: 10;
+        border: 2px solid #6d90c2;
+}
+
+#metabug th {
+        font-size: 12px;
+        text-align: left;
+}
+
+#metabug td {
+        font-size: 12px;
+        color: #6d90c2;
+        border-bottom: 1px dashed #6d90c2;
+        vertical-align:top;
+}
+
+#metabug a:link, a:visited{
+        color: #6d90c2;
+}
+
+.metabugid {
+		background-color: #b5d0d9;
+		font-weight: bold;
+}
+
+
 #expiredcontracts table {
 	    border-collapse:collapse;
 	    width: 30%;
@@ -147,6 +232,11 @@ a:hover {
 		color: #6d90c2;
 		border-bottom: 1px dashed #6d90c2;
 }
+
+#packages a:link, a:visited{
+        color: #6d90c2;
+}
+
 
 #formpackages {
         margin-left: 300px;
