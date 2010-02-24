@@ -1,0 +1,35 @@
+{% extends "index.html" %}
+{%load smart_if%}
+{%load timestamp_filter%}
+{% block content %}
+<div id='metainfo_back'><a href="javascript:history.go(-1)">back</a></div>
+<div id="metainfo">
+<img src="/media/images/icons/changelog_big.png" align="right">
+<h3>{{ package.name }}-{{ package.version }}-{{ package.release }}.{{ package.arch }}</h3>
+</div>
+<div id="metabug">
+{% if changelogs %}
+<table>
+{% for changelog in changelogs %}
+<tr>
+ <td class="metabugid">timestamp :</td>
+ <td class="metabugid">{{ changelog.timestamp|epoch }}</td>
+</tr>
+<tr>
+ <td>author - version :</td>
+ <td>{{ changelog.authorversion }}</td>
+</tr>
+<tr>
+<tr>
+ <td>description :</td>
+ <td><pre>{{ changelog.description }}</pre></td>
+</tr>
+{% endfor %}
+</table>
+{% else %}
+<h4>Sorry, no changelog available<h4>
+{% endif %}
+</div>
+<div id='metainfo_back'><a href="javascript:history.go(-1)">back</a></div>
+
+{% endblock %}

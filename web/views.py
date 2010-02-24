@@ -6,7 +6,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.template import RequestContext,loader
-from banquise.web.models import Customer, Host, Package, ServerPackages, Contract, MetaInfo, MetaBug
+from banquise.web.models import Customer, Host, Package, ServerPackages, Contract, MetaInfo, MetaBug, ChangeLog
 from banquise.web.forms import ContractForm, PackageForm, CustomerForm
 from django.utils import simplejson
 from django.core import serializers
@@ -87,6 +87,24 @@ def list_metainfo(request,package_id='',metainfo_id=''):
 
     return HttpResponse(t.render(c))
 
+@login_required
+def list_changelog(request,package_id=''):
+    """Return a list of :class:`MetaInfo` objects
+
+    :param request: :class:`django.http.HttpRequest` given by the framework
+    :type request: :class:`django.http.Request`
+    """
+    package = get_object_or_404(Package,pk=package_id)
+    changelogs = ChangeLog.objects.filter(package=package).order_by('timestamp')
+    t = loader.get_template('changelog.html')
+    scope = _get_default_context({'package': package,
+                                  'changelogs': changelogs,
+                                  'tab_host': True,
+                                  })
+
+    c = RequestContext(request, scope)
+
+    return HttpResponse(t.render(c))
     
 @login_required
 def list_customers(request):
@@ -409,51 +427,65 @@ def call_send_install(request):
     json_value = json.dumps(packages_install_list)
     return HttpResponse(json_value, mimetype="application/javascript") 
 
-             
-def call_send_update(request):
+def call_send_ask_update(request):
     uuid = request.POST[u'uuid']
     host = Host.objects.get(hash=uuid)
-    packages = request.POST[u'packages']      
-    metainfo = request.POST[u'metainfo']
-    metabug = request.POST[u'metabug']
     packages_install_list = [] 
-    parseMetaInfo(metainfo)
-    parseMetaBug(metabug)           
-    for package in json.loads(packages):
-        tab = package.split(",")
-        # find the package
-        try:
-            pack = Package.objects.get(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])
-            # is there a link between the package and the server ?    
-            try:
-                servpack = ServerPackages.objects.get(host=host,package=pack)
-            except (ServerPackages.DoesNotExist):
-                servpack = ServerPackages(host=host,package=pack,date_available=datetime.today())
-                servpack.save()
-        except (Package.DoesNotExist):
-            pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3],repo=tab[4])
-            if len(tab) > 5:
-                pack.type=tab[5]
-                updateid=tab[6]
-                if updateid != 'none':
-                    my_metainfo=MetaInfo.objects.get(updateid=str(tab[6]))
-                    pack.metainfo=my_metainfo
-            else:
-                pack.type="na"
-            pack.save()
-            # create a link with the server
-            servpack = ServerPackages(host=host,package=pack,date_available=datetime.today())
-            servpack.save()
-        # check if we have to update the package
-        #if servpack.to_install:
-        #    print "needs to be installed : " + str(pack)     
-        #    packages_install_list.append(package)
-            #packages_install_list.append("|")
     packages = ServerPackages.objects.filter(host=host,to_install=1,package_installed=0,new_install=0)
     for package in packages:
         packages_install_list.append("%s,%s,%s,%s" % (package.package.name,package.package.arch,package.package.version,package.package.release))
     json_value = json.dumps(packages_install_list)
     return HttpResponse(json_value, mimetype="application/javascript") 
+
+def call_send_changelog(request):
+    pack_id = request.POST[u'pack_id']
+    changelog = request.POST[u'changelog']
+    package = Package.objects.get(pk=pack_id)
+    changelogs = eval(json.dumps(changelog))
+    for children in eval(changelogs):
+        try:
+            change = ChangeLog.objects.get(timestamp=children[0],authorversion=children[1],description=children[2])
+        except:    
+            change = ChangeLog(timestamp=children[0],authorversion=children[1],description=children[2])
+            change.package = package
+            change.save()
+    return HttpResponse("changelog added")            
+
+def call_send_update(request):
+    uuid = request.POST[u'uuid']
+    host = Host.objects.get(hash=uuid)
+    packages = request.POST[u'packages']      
+    package = json.loads(packages)
+    tab = package.split(",")
+    # find the package
+    try:
+        pack = Package.objects.get(name=tab[0],arch=tab[1],version=tab[2],release=tab[3])
+        # is there a link between the package and the server ?    
+        try:
+            servpack = ServerPackages.objects.get(host=host,package=pack)
+        except (ServerPackages.DoesNotExist):
+            servpack = ServerPackages(host=host,package=pack,date_available=datetime.today())
+            servpack.save()
+    except (Package.DoesNotExist):
+        pack = Package(name=tab[0],arch=tab[1],version=tab[2],release=tab[3],repo=tab[4])
+        if len(tab) > 5:
+            pack.type=tab[5]
+            updateid=tab[6]
+            if updateid != 'none':
+                my_metainfo=MetaInfo.objects.get(updateid=str(tab[6]))
+                pack.metainfo=my_metainfo
+        else:
+            pack.type="na"
+        pack.save()
+        # create a link with the server
+        servpack = ServerPackages(host=host,package=pack,date_available=datetime.today())
+        servpack.save()
+        # check if we have to update the package
+        #if servpack.to_install:
+        #    print "needs to be installed : " + str(pack)     
+        #    packages_install_list.append(package)
+            #packages_install_list.append("|")
+    return HttpResponse(pack.pk) 
 
 def call_send_sync(request):
     uuid = request.POST[u'uuid']
@@ -540,11 +572,13 @@ def call_setup(request):
     return HttpResponse(host.hash)
 
 def call_send_metainfo(request):
-    parseMetaInfo(request.POST[u'metainfo'])
+    if request.POST[u'metainfo']:
+        parseMetaInfo(request.POST[u'metainfo'])
     return HttpResponse("metainfo saved") 
 
 def call_send_metabug(request): 
-    parseMetaBug(request.POST[u'metabug'],True)
+    if request.POST[u'metabug']:
+        parseMetaBug(request.POST[u'metabug'],True)
     return HttpResponse("metabug saved") 
     
 def parseMetaInfo(metainfo):

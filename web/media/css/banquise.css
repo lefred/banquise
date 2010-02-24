@@ -149,6 +149,11 @@ a:hover {
         margin-left: 350px;
 }
 
+#metabug h4 {
+        color: #6d90c2;
+		text-align: center;
+}
+
 #metabug table {
         border-collapse:collapse;
         width: 85%;

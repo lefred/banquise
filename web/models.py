@@ -62,7 +62,7 @@ class MetaBug(models.Model):
     
     def __str__(self):
         return str(self.bugid)
-
+    
 
 class Package(models.Model):
     name = models.CharField(max_length=80)
@@ -78,6 +78,16 @@ class Package(models.Model):
     def __str__(self):
         return self.name + '-' + self.arch + '.' + self.version + '.' + self.release
 
+class ChangeLog(models.Model):
+    timestamp = models.IntegerField()
+    authorversion = models.CharField(max_length=100)
+    description = models.TextField()
+    package=models.ForeignKey(Package)
+    
+    def __str__(self):
+        return str(self.timestamp) + " - " +str(self.authorversion)
+    
+    
 class ServerPackages(models.Model):
     package = models.ForeignKey(Package)
     host = models.ForeignKey(Host)

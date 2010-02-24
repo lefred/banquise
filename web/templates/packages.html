@@ -14,7 +14,7 @@
         <th>version</th>
         <th>release</th>
         <th>available since</th>
-        <th>type</th>
+        <th></th>
         <th>to install</th>
     </tr>
     
@@ -28,6 +28,9 @@
         <td>{{ pack.package.release }}</td>
         <td>{{ pack.date_available }}</td>
         <td align='center'>
+        <a href='/web/list/changelog/{{ pack.package.id }}/'>
+        <img src='/media/images/icons/changelog.png' title='changelog' border='0'>
+        </a>
         {% if pack.package.metainfo.id %}
         <a href='/web/list/metainfo/{{ pack.package.id }}/{{ pack.package.metainfo.id }}/'>
         <img src='/media/images/icons/{{ pack.package.type }}.png' title='{{ pack.package.metainfo.updateid }} : {{ pack.package.type }}' border='0'></td>
