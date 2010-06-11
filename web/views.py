@@ -16,6 +16,8 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 
+supported_client=("0.5")
+
 def _get_default_context(dict_in):
     """Returns a :class:`dict` containing all the needed variables for the context
 
@@ -312,17 +314,27 @@ def logout_view(request):
     logout(request)
     return HttpResponseRedirect('/')
 
+def check_version(version):
+    if version in supported_client:
+        return True
+    else:
+        return False
 
 
 # REST methods
 def call_test(request):
     uuid = request.POST[u'uuid']
+    version = request.POST[u'version']
     try:
         host = Host.objects.get(hash=uuid)
         contract_list = Contract.objects.filter(hosts=host,end_date__gte=datetime.today())
         if contract_list:
             #this is ok, the host exists and has a valid contract
-            return HttpResponse("OK") 
+            if check_version(version):
+                return HttpResponse("OK")
+            else:
+                return HttpResponse("VERSION")
+                
         else:
             #this host has no valid contract linked to it
             return HttpResponse("ERROR2")
