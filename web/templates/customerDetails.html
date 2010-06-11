@@ -19,13 +19,16 @@ New contract creation
 <h3>Valid contracts :</h3>
 <table>
     <tr>
+        <th></th>
+        <th>License</th>
         <th>From</th>
         <th>To</th>
-        <th>License</th>
         <th>#hosts</th>
     </tr>
     {% for cont in valid_contracts %}
     <tr>
+        <td><a href="?action=delete&cont={{cont.id}}"><img src="/media/images/icons/delete.png" height="16" border="0" title="delete the contract"></a></td>
+        <td>{{cont.license}}</td>
         <td>{{cont.start_date}}</td>
         <td>
           {{cont.end_date}}
@@ -33,7 +36,6 @@ New contract creation
             <img src='/media/images/icons/expiring.png' height='16'>
           {% endif %}
         </td>
-        <td><a href="?action=delete&cont={{cont.id}}"><img src="/media/images/icons/delete.png" height="16" border="0" title="delete the contract"></a> {{cont.license}}</td>
         <td><a href='/web/list/hosts/{{ cont.id }}'><img src='/media/images/icons/host.png' height='16' border='0'></a> 
             {{ cont.hosts.count }}
         </td>
