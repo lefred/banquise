@@ -27,18 +27,15 @@ New contract creation
     </tr>
     {% for cont in valid_contracts %}
     <tr>
-        <td><a href="?action=delete&cont={{cont.id}}"><img src="/media/images/icons/delete.png" height="16" border="0" title="delete the contract"></a></td>
+        <td>
+           <a href="?action=delete&cont={{cont.id}}"><img src="/media/images/icons/delete.png" height="16" border="0" title="Delete the contract"></a>
+           <a href='/web/list/hosts/{{ cont.id }}'><img src='/media/images/icons/host.png' height='16' border='0' title="View hosts of the contract"></a>
+           {% if cont.days_left < 10 %} <img src='/media/images/icons/expiring.png' height='16' title="Contract is almost expired"> {% endif %}
+        </td>
         <td>{{cont.license}}</td>
         <td>{{cont.start_date}}</td>
-        <td>
-          {{cont.end_date}}
-          {% if cont.days_left < 10 %}
-            <img src='/media/images/icons/expiring.png' height='16'>
-          {% endif %}
-        </td>
-        <td><a href='/web/list/hosts/{{ cont.id }}'><img src='/media/images/icons/host.png' height='16' border='0'></a> 
-            {{ cont.hosts.count }}
-        </td>
+        <td>{{cont.end_date}}</td>
+        <td>{{ cont.hosts.count }}</td>
     </tr>
     {% endfor %}
 </table>
@@ -57,13 +54,14 @@ New contract creation
     </tr>
     {% for cont in future_contracts %}
     <tr>
-        <td><a href="?action=delete&cont={{cont.id}}"><img src="/media/images/icons/delete.png" height="16" border="0" title="delete the contract"></a></td>
+        <td>
+           <a href="?action=delete&cont={{cont.id}}"><img src="/media/images/icons/delete.png" height="16" border="0" title="Delete the contract"></a>
+           <a href='/web/list/hosts/{{ cont.id }}'><img src='/media/images/icons/host.png' height='16' border='0' title="View hosts of the contract"></a>
+       </td>
         <td>{{cont.license}}</td>
         <td>{{cont.start_date}}</td>
         <td>{{cont.end_date}}</td>
-        <td><a href='/web/list/hosts/{{ cont.id }}'><img src='/media/images/icons/host.png' height='16' border='0'></a>
-            {{ cont.hosts.count }}
-        </td>
+        <td>{{ cont.hosts.count }}</td>
     </tr>
     {% endfor %}
 </table>
@@ -82,11 +80,14 @@ New contract creation
     </tr>
     {% for cont in old_contracts %}
     <tr>
-        <td><a href="?action=delete&cont={{cont.id}}"><img src="/media/images/icons/delete.png" height="16" border="0" title="delete the contract"></a></td>
+        <td>
+           <a href="?action=delete&cont={{cont.id}}"><img src="/media/images/icons/delete.png" height="16" border="0" title="Delete the contract"></a>
+           <a href='/web/list/hosts/{{ cont.id }}'><img src='/media/images/icons/host.png' height='16' border='0' title="View hosts of the contract"></a> 
+        </td>
         <td>{{cont.license}}</td>
         <td>{{cont.start_date}}</td>
         <td>{{cont.end_date}}</td> 
-        <td><a href='/web/list/hosts/{{ cont.id }}'><img src='/media/images/icons/host.png' height='16' border='0'></a> 
+        <td>
             {{ cont.hosts.count }}
         </td>
     </tr>

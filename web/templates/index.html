@@ -37,7 +37,7 @@
     <tr>
         <td><strong>{{cont.customer.name}}:</strong></td>
         <td>valid until {{cont.end_date}}</td> 
-        <td><img src='/media/images/icons/host.png' height='16'> {{ cont.hosts.count }} </td>
+        <td><a href='/web/list/hosts/{{ cont.id }}'><img src='/media/images/icons/host.png' height='16' border='none'></a> {{ cont.hosts.count }} </td>
         <td><img src='/media/images/icons/package.png' height='16'> {{ cont.packages_to_update }} </td>
     </tr>
     {% endfor %}
