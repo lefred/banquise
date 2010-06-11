@@ -185,11 +185,19 @@ a:hover {
 
 
 #expiredcontracts table {
-	    border-collapse:collapse;
-	    width: 30%;
-	    padding: 10;
-	    margin: 10;
-		border: 2px solid #ff5555;
+	border-collapse:collapse;
+	width: 70%;
+	padding: 10;
+	margin: 10;
+	border: 2px solid #ff5555;
+}
+
+#futurecontracts table {
+	border-collapse:collapse;
+	width: 70%;
+	padding: 10;
+	margin: 10;
+	border: 2px solid #55ff55;
 }
 
 #hosts {

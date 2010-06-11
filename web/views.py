@@ -254,8 +254,9 @@ def details_customer(request, customer_id):
     elif (request.GET.get('action') == 'delete'):
         contract = get_object_or_404(Contract,pk=request.GET.get('cont'))    
         contract.delete()
-    valid_contracts = contracts.filter(end_date__gte=datetime.today())
+    valid_contracts = contracts.filter(start_date__lte=datetime.today(),end_date__gte=datetime.today())
     old_contracts = contracts.filter(end_date__lt=datetime.today())
+    future_contracts = contracts.filter(start_date__gt=datetime.today())
 
 
     t = loader.get_template('customerDetails.html')
@@ -263,6 +264,7 @@ def details_customer(request, customer_id):
                                   'action':action,
                                   'form':form,
                                   'valid_contracts':valid_contracts,
+                                  'future_contracts':future_contracts,
                                   'tab_customer': True,
                                   'old_contracts':old_contracts,})
     c = RequestContext(request, scope)
