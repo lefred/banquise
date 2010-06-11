@@ -25,7 +25,7 @@ class Migration:
             'end_date': ('django.db.models.fields.DateField', [], {}),
             'hosts': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['web.Host']", 'symmetrical': 'False'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'license': ('django.db.models.fields.CharField', [], {'max_length': '32'}),
+            'license': ('django.db.models.fields.CharField', [], {'max_length': '32', 'null': 'True'}),
             'start_date': ('django.db.models.fields.DateField', [], {})
         },
         'web.customer': {

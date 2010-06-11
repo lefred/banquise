@@ -55,8 +55,8 @@ class Migration:
             'name': ('django.db.models.fields.CharField', [], {'max_length': '80'}),
             'release': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'repo': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
-            'type': ('django.db.models.fields.CharField', [], {'max_length': '15', 'blank': 'True'}),
-            'update_id': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
+            'type': ('django.db.models.fields.CharField', [], {'max_length': '15', 'blank': 'True', 'null': 'True'}),
+            'update_id': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True','null': 'True'}),
             'version': ('django.db.models.fields.CharField', [], {'max_length': '50'})
         },
         'web.serverpackages': {

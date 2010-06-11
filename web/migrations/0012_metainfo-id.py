@@ -53,7 +53,7 @@ class Migration:
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'title': ('django.db.models.fields.TextField', [], {}),
             'type': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
-            'updateid': ('django.db.models.fields.CharField', [], {'max_length': '50'})
+            'updateid': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'})
         },
         'web.package': {
             'Meta': {'unique_together': "(('name', 'arch', 'version', 'release'),)"},

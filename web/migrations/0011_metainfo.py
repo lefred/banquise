@@ -72,7 +72,7 @@ class Migration:
             'Meta': {'unique_together': "(('name', 'arch', 'version', 'release'),)"},
             'arch': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'metainfo': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['web.MetaInfo']"}),
+            'metainfo': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['web.MetaInfo']", 'null': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '80'}),
             'release': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'repo': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),

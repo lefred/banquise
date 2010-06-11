@@ -82,8 +82,8 @@ class Migration:
             'arch': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '250'}),
-            'release': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'version': ('django.db.models.fields.CharField', [], {'max_length': '50'})
+            'release': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
+            'version': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'})
         },
         'web.serverpackages': {
             'date_available': ('django.db.models.fields.DateTimeField', [], {}),

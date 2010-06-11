@@ -4,8 +4,8 @@ import datetime
 
 class Customer(models.Model):
     name = models.CharField(max_length=150)
-    contact = models.CharField(max_length=150)
-    email = models.CharField(max_length=150) 
+    contact = models.CharField(max_length=150,null=True)
+    email = models.CharField(max_length=150,null=True)
     
     def __unicode__(self):
         return self.name
@@ -15,7 +15,7 @@ class Contract(models.Model):
     end_date = models.DateField('ending date')
     days_left = lambda x:  (x.end_date - datetime.date.today()).days
     customer = models.ForeignKey(Customer)
-    license = models.CharField(max_length=32)
+    license = models.CharField(max_length=32,null=True)
     hosts = models.ManyToManyField('Host',
             symmetrical=False,
             related_name='C_h_H')
@@ -45,10 +45,10 @@ class Host(models.Model):
         return self.name
 
 class MetaInfo(models.Model):
-    updateid = models.CharField(max_length=50)
-    status = models.CharField(max_length=20)
+    updateid = models.CharField(max_length=50,null=True)
+    status = models.CharField(max_length=20,null=True)
     type = models.CharField(max_length=20)
-    description = models.TextField()
+    description = models.TextField(null=True)
     
     def __str__(self):
         return str(self.updateid)
@@ -67,10 +67,10 @@ class MetaBug(models.Model):
 class Package(models.Model):
     name = models.CharField(max_length=80)
     arch = models.CharField(max_length=10)
-    version = models.CharField(max_length=50)
-    release = models.CharField(max_length=50)
-    repo = models.CharField(max_length=50,blank=True)
-    type = models.CharField(max_length=15,blank=True)
+    version = models.CharField(max_length=50,null=True)
+    release = models.CharField(max_length=50,null=True)
+    repo = models.CharField(max_length=50,blank=True,null=True)
+    type = models.CharField(max_length=15,blank=True,null=True)
     metainfo=models.ForeignKey(MetaInfo,null=True,blank=True)
     class Meta:
         unique_together = ('name', 'arch', 'version', 'release',)

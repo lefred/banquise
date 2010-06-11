@@ -83,9 +83,9 @@ class Migration:
             'type': ('django.db.models.fields.CharField', [], {'max_length': '20'})
         },
         'web.metainfo': {
-            'description': ('django.db.models.fields.TextField', [], {}),
+            'description': ('django.db.models.fields.TextField', [], {'null': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'status': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
+            'status': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True'}),
             'type': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
             'updateid': ('django.db.models.fields.CharField', [], {'max_length': '50'})
         },

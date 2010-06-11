@@ -35,8 +35,8 @@ class Migration:
             'start_date': ('django.db.models.fields.DateField', [], {})
         },
         'web.customer': {
-            'contact': ('django.db.models.fields.CharField', [], {'max_length': '150'}),
-            'email': ('django.db.models.fields.CharField', [], {'max_length': '150'}),
+            'contact': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True'}),
+            'email': ('django.db.models.fields.CharField', [], {'max_length': '150', 'null': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '150'})
         },
