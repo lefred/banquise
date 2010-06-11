@@ -546,7 +546,11 @@ def call_setup(request):
     license_tosearch = request.POST[u'license'] 
     pub_ip=request.META["REMOTE_ADDR"]
     priv_ip=request.POST[u'priv_ip']
-    contract = Contract.objects.get(license=license_tosearch) 
+    try:
+        contract = Contract.objects.get(license=license_tosearch) 
+    except:
+        return HttpResponse("ERROR0") 
+        
     customer = Customer.objects.filter(contract=contract)
     try: 
         # search if the host exists alreay 
