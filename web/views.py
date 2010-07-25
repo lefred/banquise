@@ -242,7 +242,7 @@ def details_customer(request, customer_id):
         for host in cont.hosts.all():
             s.add(host)
     ok=0        
-    if request.method == 'POST': # If the form has been submitted...
+    if request.method == 'POST' and request.POST.get('end_date'): # If the form has been submitted...
         form = ContractForm(request.POST) # A form bound to the POST data
         ok=1
            
@@ -251,6 +251,9 @@ def details_customer(request, customer_id):
             contract.license="%s-%s-%s" % (str(uuid.uuid4())[0:3],str(uuid.uuid4())[0:4],str(uuid.uuid4())[0:3])
             contract.customer=customer
             contract.save()
+            ok=0
+        else:
+            action='add'
             ok=0
     if (request.GET.get('action') == 'add' and not request.method == 'POST') or ok == 1:
         action='add'
