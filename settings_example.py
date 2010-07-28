@@ -1,3 +1,5 @@
+import os.path
+ROOT_PATH = os.path.dirname(__file__)
 # Django settings for banquise project.
 
 DEBUG = True
@@ -35,7 +37,7 @@ USE_I18N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = '/var/www/banquise/web/media/'
+MEDIA_ROOT = os.path.join(ROOT_PATH, 'media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -70,7 +72,8 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '/var/www/banquise/templates'
+    #'/var/www/banquise/templates'
+    os.path.join(ROOT_PATH, 'templates')
 )
 
 INSTALLED_APPS = (
