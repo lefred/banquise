@@ -85,3 +85,5 @@ INSTALLED_APPS = (
     'south',
     'banquise.web',
 )
+
+LOGIN_URL='/banquise/accounts/login'
