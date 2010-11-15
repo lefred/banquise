@@ -1,0 +1,133 @@
+--- web/views.py.orig	2010-11-15 19:34:14.000000000 +0100
++++ web/views.py	2010-11-15 19:35:24.000000000 +0100
+@@ -15,7 +15,7 @@
+ from django.contrib.auth import authenticate
+ from django.contrib.auth.decorators import login_required
+ from django.contrib.auth import logout
+-from django.views.decorators.csrf import csrf_exempt
++#from django.views.decorators.csrf import csrf_exempt
+ 
+ 
+ supported_client=("0.5")
+@@ -329,7 +329,7 @@
+ 
+ 
+ # REST methods
+-@csrf_exempt
++#@csrf_exempt
+ def call_test(request):
+     uuid = request.POST[u'uuid']
+     version = request.POST[u'version']
+@@ -350,7 +350,7 @@
+             #no host found
+             return HttpResponse("ERROR3")
+                   
+-@csrf_exempt
++#@csrf_exempt
+ def call_set_release(request):
+     uuid = request.POST[u'uuid']
+     try:
+@@ -362,7 +362,7 @@
+         # can set the release
+         return HttpResponse("ERROR4") 
+ 
+-@csrf_exempt
++#@csrf_exempt
+ def call_packs_done(request):
+     uuid = request.POST[u'uuid']
+     host = Host.objects.get(hash=uuid)
+@@ -407,7 +407,7 @@
+             servpack.save()
+     return HttpResponse("Packages updated")
+ 
+-@csrf_exempt
++#@csrf_exempt
+ def call_send_list(request):
+     uuid = request.POST[u'uuid']
+     packages = request.POST[u'packages']      
+@@ -440,7 +440,7 @@
+ 
+     return HttpResponse("Ok")
+         
+-@csrf_exempt
++#@csrf_exempt
+ def call_send_install(request):
+     uuid = request.POST[u'uuid']
+     host = Host.objects.get(hash=uuid)
+@@ -451,7 +451,7 @@
+     json_value = json.dumps(packages_install_list)
+     return HttpResponse(json_value, mimetype="application/javascript") 
+ 
+-@csrf_exempt
++#@csrf_exempt
+ def call_send_ask_update(request):
+     uuid = request.POST[u'uuid']
+     host = Host.objects.get(hash=uuid)
+@@ -462,7 +462,7 @@
+     json_value = json.dumps(packages_install_list)
+     return HttpResponse(json_value, mimetype="application/javascript") 
+ 
+-@csrf_exempt
++#@csrf_exempt
+ def call_send_changelog(request):
+     pack_id = request.POST[u'pack_id']
+     changelog = request.POST[u'changelog']
+@@ -477,7 +477,7 @@
+             change.save()
+     return HttpResponse("changelog added")            
+ 
+-@csrf_exempt
++#@csrf_exempt
+ def call_send_update(request):
+     uuid = request.POST[u'uuid']
+     host = Host.objects.get(hash=uuid)
+@@ -514,7 +514,7 @@
+             #packages_install_list.append("|")
+     return HttpResponse(pack.pk) 
+ 
+-@csrf_exempt
++#@csrf_exempt
+ def call_send_sync(request):
+     uuid = request.POST[u'uuid']
+     host = Host.objects.get(hash=uuid)
+@@ -569,7 +569,7 @@
+                 package.save()
+     return HttpResponse("synced : %s updated, %s added, %s synced, %s deleted" % (tot_updated,tot_added,tot_synced,tot_deleted))
+         
+-@csrf_exempt
++#@csrf_exempt
+ def call_setup(request):
+     # search it there is a contract on which we can attach the host
+     license_tosearch = request.POST[u'license'] 
+@@ -604,19 +604,19 @@
+     #return HttpResponse(json_value, mimetype="application/javascript") 
+     return HttpResponse(host.hash)
+ 
+-@csrf_exempt
++#@csrf_exempt
+ def call_send_metainfo(request):
+     if request.POST[u'metainfo']:
+         parseMetaInfo(request.POST[u'metainfo'])
+     return HttpResponse("metainfo saved") 
+ 
+-@csrf_exempt
++#@csrf_exempt
+ def call_send_metabug(request): 
+     if request.POST[u'metabug']:
+         parseMetaBug(request.POST[u'metabug'],True)
+     return HttpResponse("metabug saved") 
+     
+-@csrf_exempt
++#@csrf_exempt
+ def parseMetaInfo(metainfo):
+     metadata=json.loads(metainfo)
+     if not isinstance(metadata,list):
+@@ -641,7 +641,7 @@
+                 my_metainfo.save()
+     return True
+                 
+-@csrf_exempt
++#@csrf_exempt
+ def parseMetaBug(metabug,onerecord=False):
+     # save the bug info            
+     if onerecord:

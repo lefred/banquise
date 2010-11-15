@@ -1,0 +1,10 @@
+--- web/views.py	2010-01-11 17:10:17.000000000 +0100
++++ ../views.centos	2010-01-12 00:23:59.057541299 +0100
+@@ -1,6 +1,6 @@
+ from datetime import datetime
+ import uuid
+-import json
++import simplejson as json
+ 
+ from django.shortcuts import render_to_response, get_object_or_404
+ from django.http import HttpResponseRedirect, HttpResponse
