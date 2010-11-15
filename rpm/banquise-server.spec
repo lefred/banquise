@@ -11,7 +11,8 @@ Source1:	%{name}.conf
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:	noarch
 Requires:	python, yum, Django, Django-south, MySQL-python, mod_python   
-%if 1%{?fedora}
+%if 0%{?fedora} > 1
+%else
 Patch0:         views.centos.patch
 Patch1:         django1.1_views.patch
 Requires:       python-uuid, python-json
@@ -23,7 +24,8 @@ Sever part of the banquise project
 
 %prep
 %setup  
-%if 1%{?fedora}
+%if 0%{?fedora} > 1
+%else
 %patch0
 %patch1
 %endif
