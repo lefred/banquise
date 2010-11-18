@@ -185,6 +185,7 @@ def list_packages(request, host_id=""):
             for id in to_install:
                 p = ServerPackages.objects.get(id=id)
                 p.to_install = False
+                p.package_skipped = True
                 p.date_installed=datetime.today()
                 p.save()
         else:
