@@ -1,0 +1,124 @@
+{% extends "index.html" %}
+{%load smart_if%}
+{% block content %}
+<h3>Chronological History</h3> 
+<form method="POST">
+	<table>
+	{{ form }}
+	</table>
+	<input type="submit" value="show">
+</form>
+
+<h4>{{ selected_date|date:"D d M Y" }}</h4>
+<h5>Available this day: {{ packages_available.paginator.count }}</h5>
+<div id='packages'>
+<table>
+    <tr>
+        <th>name</th>
+        <th>architecture</th>
+        <th>version</th>
+        <th>release</th>
+        <th></th>
+    </tr>
+    
+    {% for pack in packages_available.object_list %}
+        <tr class='packagestoinstall'> 
+        <td>{{ pack.package.name }}
+        </td>
+        <td>{{ pack.package.arch }}</td>
+        <td>{{ pack.package.version }}</td>
+        <td>{{ pack.package.release }}</td>
+        <td align='center'>
+        <a href='/web/list/changelog/{{ pack.package.id }}/'>
+        <img src='/media/images/icons/changelog.png' title='changelog' border='0'>
+        </a>
+        {% if pack.package.metainfo.id %}
+        <a href='/web/list/metainfo/{{ pack.package.id }}/{{ pack.package.metainfo.id }}/'>
+        <img src='/media/images/icons/{{ pack.package.type }}.png' title='{{ pack.package.metainfo.updateid }} : {{ pack.package.type }}' border='0'></td>
+        </a>
+        {% else %}
+        <img src='/media/images/icons/{{ pack.package.type }}.png' title='{{ pack.package.metainfo.updateid }} : {{ pack.package.type }}' border='0'></td>
+        {% endif %}
+    </tr>
+   {% endfor %}
+</table>
+<div class="pagination">
+    <span class="step-links">
+        {% if packages_available.has_previous %}
+            <a href="?date_available={{ selected_date|date:"Y-m-d" }}&page={{ packages_available.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ packages_available.number }} of {{ packages_available.paginator.num_pages }}.
+        </span>
+
+        {% if packages_available.has_next %}
+            <a href="?date_available={{ selected_date|date:"Y-m-d" }}&page={{ packages_available.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+
+<a name='installed'><h5>Installed this day: {{ packages_installed.paginator.count }}</h5></a>
+{% regroup packages_installed_list by host as packages_installed_by_host %}
+
+{% for pack in packages_installed_by_host %}        
+	{{ pack.grouper }} : 
+	{% for item in pack.list %}  
+		{% if forloop.last %}
+			{{ forloop.counter }}<br>
+		{% endif %}
+	{% endfor %}
+{% endfor %}
+
+<table>
+    <tr>
+        <th>host</th>
+        <th>name</th>
+        <th>architecture</th>
+        <th>version</th>
+        <th>release</th>
+        <th></th>
+    </tr>
+    
+    {% for pack in packages_installed.object_list %}
+        <tr class='packagestoinstall'> 
+        <td>{{ pack.host }}
+        </td>
+        <td>{{ pack.package.name }}
+        </td>
+        <td>{{ pack.package.arch }}</td>
+        <td>{{ pack.package.version }}</td>
+        <td>{{ pack.package.release }}</td>
+        <td align='center'>
+        <a href='/web/list/changelog/{{ pack.package.id }}/'>
+        <img src='/media/images/icons/changelog.png' title='changelog' border='0'>
+        </a>
+        {% if pack.package.metainfo.id %}
+        <a href='/web/list/metainfo/{{ pack.package.id }}/{{ pack.package.metainfo.id }}/'>
+        <img src='/media/images/icons/{{ pack.package.type }}.png' title='{{ pack.package.metainfo.updateid }} : {{ pack.package.type }}' border='0'></td>
+        </a>
+        {% else %}
+        <img src='/media/images/icons/{{ pack.package.type }}.png' title='{{ pack.package.metainfo.updateid }} : {{ pack.package.type }}' border='0'></td>
+        {% endif %}
+    </tr>
+   {% endfor %}
+</table>
+<div class="pagination">
+    <span class="step-links">
+        {% if packages_installed.has_previous %}
+            <a href="?date_available={{ selected_date|date:"Y-m-d" }}&page_inst={{ packages_installed.previous_page_number }}#installed">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ packages_installed.number }} of {{ packages_installed.paginator.num_pages }}.
+        </span>
+
+        {% if packages_installed.has_next %}
+            <a href="?date_available={{ selected_date|date:"Y-m-d" }}&page_inst={{ packages_installed.next_page_number }}#installed">next</a>
+        {% endif %}
+    </span>
+</div>
+
+</div>
+
+{% endblock %}

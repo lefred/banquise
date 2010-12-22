@@ -1,4 +1,5 @@
 from datetime import datetime
+from datetime import timedelta
 import uuid
 import json
 
@@ -7,7 +8,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.template import RequestContext,loader
 from banquise.web.models import Customer, Host, Package, ServerPackages, Contract, MetaInfo, MetaBug, ChangeLog
-from banquise.web.forms import ContractForm, PackageForm, CustomerForm
+from banquise.web.forms import ContractForm, PackageForm, CustomerForm, HistoryForm
 from django.utils import simplejson
 from django.core import serializers
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
@@ -47,12 +48,12 @@ def server_package(request,package_id=''):
     package=Package.objects.get(id=package_id)
     link_packages = ServerPackages.objects.filter(package=package).order_by('package__name')
     if request.method == 'POST':
-        for host in request.POST.getlist('hosts'): 
+        for host in request.POST.getlist('hosts'):
             servpack = ServerPackages(host=Host.objects.get(id=host),package=package,
                                   to_install=1,new_install=1)
             servpack.save()
         return HttpResponseRedirect("/web/list/packages/?id=%s" % (package_id))
-    
+
     hosts = Host.objects.all()
     host_list=[]
     host_installed=[]
@@ -61,7 +62,7 @@ def server_package(request,package_id=''):
     for host in hosts:
         if str(host.id) not in host_installed:
             host_list.append(host)
- 
+
     t = loader.get_template('ServerPackage.html')
     scope = _get_default_context({'package':package,
                                   'host_list':host_list,
@@ -109,7 +110,7 @@ def list_changelog(request,package_id=''):
     c = RequestContext(request, scope)
 
     return HttpResponse(t.render(c))
-    
+
 @login_required
 def list_customers(request):
     """Return a list of :class:`Customer` objects
@@ -120,7 +121,7 @@ def list_customers(request):
     customers = Customer.objects.all()
     action=""
     form=""
-    ok=0        
+    ok=0
     if request.method == 'POST': # If the form has been submitted...
         form = CustomerForm(request.POST) # A form bound to the POST data
         ok=1
@@ -130,7 +131,7 @@ def list_customers(request):
     if (request.GET.get('action') == 'add' and not request.method == 'POST') or ok == 1:
         action='add'
         form = CustomerForm();
-    t = loader.get_template('customers.htm')
+    t = loader.get_template('customers.html')
     scope = _get_default_context({'customers':customers,
                                   'action':action,
                                   'form':form,
@@ -154,7 +155,7 @@ def list_hosts(request, contract_id=""):
         hosts = Host.objects.all()
     #contracts = Contract.objects.all()
 
-    t = loader.get_template('hosts.htm')
+    t = loader.get_template('hosts.html')
     c = RequestContext(request, _get_default_context({'hosts':hosts,'tab_host': True}))
 
     return HttpResponse(t.render(c))
@@ -208,7 +209,7 @@ def list_packages(request, host_id=""):
         packages_list = paginator.page(page)
     except (EmptyPage, InvalidPage):
         packages_list = paginator.page(paginator.num_pages)
-        
+
     paginator_history = Paginator(packages_installed, 25)
     try:
         page_hist = int(request.GET.get('page_hist', '1'))
@@ -242,11 +243,11 @@ def details_customer(request, customer_id):
     for cont in contracts:
         for host in cont.hosts.all():
             s.add(host)
-    ok=0        
+    ok=0
     if request.method == 'POST' and request.POST.get('end_date'): # If the form has been submitted...
         form = ContractForm(request.POST) # A form bound to the POST data
         ok=1
-           
+
         if form.is_valid(): # All validation rules pass
             contract=form.save(commit=False)
             contract.license="%s-%s-%s" % (str(uuid.uuid4())[0:3],str(uuid.uuid4())[0:4],str(uuid.uuid4())[0:3])
@@ -260,7 +261,7 @@ def details_customer(request, customer_id):
         action='add'
         form = ContractForm();
     elif (request.GET.get('action') == 'delete'):
-        contract = get_object_or_404(Contract,pk=request.GET.get('cont'))    
+        contract = get_object_or_404(Contract,pk=request.GET.get('cont'))
         contract.delete()
     valid_contracts = contracts.filter(start_date__lte=datetime.today(),end_date__gte=datetime.today())
     old_contracts = contracts.filter(end_date__lt=datetime.today())
@@ -306,12 +307,12 @@ def form_packages(request):
             s_release = form.cleaned_data['release']
             s_repo = form.cleaned_data['repo']
             packages=Package.objects.filter(name__contains=s_name,arch__contains=s_arch,version__contains=s_version,release__contains=s_release,repo__contains=s_repo).order_by('name','arch','version','release')
-            
+
     elif request.GET.get('id'):
         pack_id = request.GET.get('id')
         packages=Package.objects.filter(id=pack_id)
         link_packages = ServerPackages.objects.filter(package=packages).order_by('package__name')
-        
+
     t = loader.get_template('packageForm.html')
     scope = _get_default_context({'tab_package': True,'pack_detail':pack_id,'form':form,'packages':packages,'link_packages':link_packages})
     c = RequestContext(request, scope)
@@ -328,6 +329,60 @@ def check_version(version):
     else:
         return False
 
+@login_required
+def list_packages_history(request, host_id=""):
+    """Return a :class:`django.db.models.query.QuerySet` of :class:`Package` objects
+
+    :param request: :class:`django.http.HttpRequest` given by the framework
+    :type request: :class:`django.http.Request`
+    """
+
+    #this doesn't work yet
+    #host = get_object_or_404(Host,pk=host_id)
+    selected_date  = datetime.today()
+    form = HistoryForm()
+    if request.POST.get('date_available'): # If the form has been submitted...
+        selected_date=datetime.strptime(request.POST.get('date_available'),"%Y-%m-%d")
+    if request.GET.get('date_available'): # If the form has been submitted...
+        selected_date=datetime.strptime(request.GET.get('date_available'),"%Y-%m-%d")
+    #    form = HistoryForm(request.POST) # A form bound to the POST data
+    selected_date1 =  selected_date + timedelta(days=1)
+    selected_date1 =  datetime(selected_date1.year, selected_date1.month, + selected_date1.day)
+
+    packages_available = ServerPackages.objects.filter(date_available__gte=selected_date,date_available__lt=selected_date1).order_by('package__name')
+    packages_installed = ServerPackages.objects.filter(date_installed__gte=selected_date,date_installed__lt=selected_date1).order_by('host','package__name')
+    
+    paginator = Paginator(packages_available, 25)
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+    try:
+        packages_list = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        packages_list = paginator.page(paginator.num_pages)
+
+    paginator_inst = Paginator(packages_installed, 25)
+    try:
+        page_inst = int(request.GET.get('page_inst', '1'))
+    except ValueError:
+        page_inst = 1
+    try:
+        packages_inst_list = paginator_inst.page(page_inst)
+    except (EmptyPage, InvalidPage):
+        packages_inst_list = paginator.page(paginator_inst.num_pages)
+
+
+    t = loader.get_template('packagesHistory.html')
+    c = RequestContext(request, _get_default_context({'packages_available':packages_list,
+                       'packages_installed':packages_inst_list,
+                       'packages_installed_list':packages_installed,
+                       'selected_date': selected_date,
+                       'form': form,
+                       'tab_host': True,}))
+
+    return HttpResponse(t.render(c))
+
 
 # REST methods
 @csrf_exempt
@@ -343,14 +398,14 @@ def call_test(request):
                 return HttpResponse("OK")
             else:
                 return HttpResponse("VERSION")
-                
+
         else:
             #this host has no valid contract linked to it
             return HttpResponse("ERROR2")
     except:
             #no host found
             return HttpResponse("ERROR3")
-                  
+
 @csrf_exempt
 def call_set_release(request):
     uuid = request.POST[u'uuid']
@@ -358,10 +413,10 @@ def call_set_release(request):
         host = Host.objects.get(hash=uuid)
         host.release = request.POST[u'release']
         host.save()
-        return HttpResponse("OK") 
-    except:     
+        return HttpResponse("OK")
+    except:
         # can set the release
-        return HttpResponse("ERROR4") 
+        return HttpResponse("ERROR4")
 
 @csrf_exempt
 def call_packs_done(request):
@@ -369,7 +424,7 @@ def call_packs_done(request):
     host = Host.objects.get(hash=uuid)
     packages = request.POST[u'packages'] 
     packages_skipped = request.POST[u'packages_skipped']
-    
+
     # mark skipped all packages not more found on the repo
     for skip_package in json.loads(packages_skipped):
         skip_tab = skip_package.split(",")
@@ -569,29 +624,29 @@ def call_send_sync(request):
                 package.date_synced=datetime.today()
                 package.save()
     return HttpResponse("synced : %s updated, %s added, %s synced, %s deleted" % (tot_updated,tot_added,tot_synced,tot_deleted))
-        
+
 @csrf_exempt
 def call_setup(request):
     # search it there is a contract on which we can attach the host
-    license_tosearch = request.POST[u'license'] 
+    license_tosearch = request.POST[u'license']
     pub_ip=request.META["REMOTE_ADDR"]
     priv_ip=request.POST[u'priv_ip']
     try:
-        contract = Contract.objects.get(license=license_tosearch) 
+        contract = Contract.objects.get(license=license_tosearch)
     except:
-        return HttpResponse("ERROR0") 
-        
+        return HttpResponse("ERROR0")
+
     customer = Customer.objects.filter(contract=contract)
-    try: 
-        # search if the host exists alreay 
+    try:
+        # search if the host exists alreay
         host = Host.objects.get(name=request.POST[u'hostname'])
         # is it link to a valid contract already ?
         contract_list = Contract.objects.filter(customer=customer,hosts=host,end_date__gte=datetime.today())
         if contract_list:
-            print "This host is already linked to a valid contract" 
-            return HttpResponse("ERROR1") 
-       
-    except:     
+            print "This host is already linked to a valid contract"
+            return HttpResponse("ERROR1")
+
+    except:
         host = Host(name=request.POST[u'hostname'])
     # generate a hash to identify the host
     host.hash = str(uuid.uuid4())[0:8]
@@ -599,24 +654,24 @@ def call_setup(request):
     host.ip = priv_ip
     host.public_ip=pub_ip
     host.save()
-    contract.hosts.add(host)   
+    contract.hosts.add(host)
     contract.save()
     #json_value = serializers.serialize('json',contract)
-    #return HttpResponse(json_value, mimetype="application/javascript") 
+    #return HttpResponse(json_value, mimetype="application/javascript")
     return HttpResponse(host.hash)
 
 @csrf_exempt
 def call_send_metainfo(request):
     if request.POST[u'metainfo']:
         parseMetaInfo(request.POST[u'metainfo'])
-    return HttpResponse("metainfo saved") 
+    return HttpResponse("metainfo saved")
 
 @csrf_exempt
-def call_send_metabug(request): 
+def call_send_metabug(request):
     if request.POST[u'metabug']:
         parseMetaBug(request.POST[u'metabug'],True)
-    return HttpResponse("metabug saved") 
-    
+    return HttpResponse("metabug saved")
+
 @csrf_exempt
 def parseMetaInfo(metainfo):
     metadata=json.loads(metainfo)

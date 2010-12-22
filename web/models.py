@@ -6,7 +6,7 @@ class Customer(models.Model):
     name = models.CharField(max_length=150)
     contact = models.CharField(max_length=150,null=True)
     email = models.CharField(max_length=150,null=True)
-    
+
     def __unicode__(self):
         return self.name
 
@@ -49,7 +49,7 @@ class MetaInfo(models.Model):
     status = models.CharField(max_length=20,null=True)
     type = models.CharField(max_length=20)
     description = models.TextField(null=True)
-    
+
     def __str__(self):
         return str(self.updateid)
 
@@ -59,10 +59,10 @@ class MetaBug(models.Model):
     type = models.CharField(max_length=20)
     title = models.TextField()
     metainfo=models.ForeignKey(MetaInfo, null=True)
-    
+
     def __str__(self):
         return str(self.bugid)
-    
+
 
 class Package(models.Model):
     name = models.CharField(max_length=80)
@@ -83,11 +83,11 @@ class ChangeLog(models.Model):
     authorversion = models.CharField(max_length=100)
     description = models.TextField()
     package=models.ForeignKey(Package)
-    
+
     def __str__(self):
         return str(self.timestamp) + " - " +str(self.authorversion)
-    
-    
+
+
 class ServerPackages(models.Model):
     package = models.ForeignKey(Package)
     host = models.ForeignKey(Host)
@@ -95,11 +95,11 @@ class ServerPackages(models.Model):
     date_available = models.DateTimeField(blank=True,null=True)
     date_installed = models.DateTimeField(blank=True,null=True)
     date_synced = models.DateTimeField(blank=True,null=True)
-    to_install = models.BooleanField() 
+    to_install = models.BooleanField()
     package_skipped = models.BooleanField()
     new_install = models.BooleanField()
     removed = models.BooleanField()
-    
+
     def __str__(self):
         return str(self.package) + '-' + str(self.host)
 
