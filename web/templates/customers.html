@@ -1,0 +1,25 @@
+{% extends "index.html" %}
+{% block content %}
+<div id="customers">
+<a href="?action=add"><img src="/media/images/icons/add.png" title="add a new customer" border="0"></a>
+<table>
+{% for cust in customers %}
+<tr>
+ <td>{{ cust.name }}</td>
+ <td>{{ cust.contract_set.latest.end_date }} ({{ cust.contract_set.latest.days_left }})</td>
+ <td width='10%' align='center'><a href='/web/customer/{{ cust.id }}/'><img src='/media/images/icons/details.png' border='0'></a></td>
+</tr>
+{% endfor %}
+</table>
+{% if action %}
+<p>
+Enter valid information for the new customer
+<form method="POST">
+  <table>
+	{{ form }}
+  </table>
+  <input type="submit" value="Save customer">
+</form>
+{% endif %}
+</div>
+{% endblock %}
