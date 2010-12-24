@@ -8,4 +8,4 @@ other needed sources are in the rpm folder :
 - patches for json version used in centos
 - banquise-server.conf file for apache
 
-
+lefred
