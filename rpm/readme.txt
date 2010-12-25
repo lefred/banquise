@@ -9,3 +9,5 @@ other needed sources are in the rpm folder :
 - banquise-server.conf file for apache
 
 lefred
+
+merry x-mas
