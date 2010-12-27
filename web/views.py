@@ -1,3 +1,4 @@
+from datetime import date
 from datetime import datetime
 from datetime import timedelta
 import uuid
@@ -339,11 +340,11 @@ def list_packages_history(request, host_id=""):
 
     #this doesn't work yet
     #host = get_object_or_404(Host,pk=host_id)
-    selected_date  = datetime.today()
+    selected_date  = date.today()
     form = HistoryForm()
     if request.POST.get('date_available'): # If the form has been submitted...
         selected_date=datetime.strptime(request.POST.get('date_available'),"%Y-%m-%d")
-    if request.GET.get('date_available'): # If the form has been submitted...
+    elif request.GET.get('date_available'): # If the form has been submitted...
         selected_date=datetime.strptime(request.GET.get('date_available'),"%Y-%m-%d")
     #    form = HistoryForm(request.POST) # A form bound to the POST data
     selected_date1 =  selected_date + timedelta(days=1)
