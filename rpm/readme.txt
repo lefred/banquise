@@ -6,7 +6,7 @@ $ git archive master --format tar --prefix banquise-server-0.5/ | gzip > ~/rpmbu
 $ rpmbuild -ba banquise-server.spec
 
 other needed sources are in the rpm folder :
-- patches for django 1.1.x (used in centos)
+- patches for django 1.1.x (used in centos) and datetime <python 2.5
 - patches for json version used in centos
 - banquise-server.conf file for apache
 
