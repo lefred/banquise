@@ -12,4 +12,3 @@ other needed sources are in the rpm folder :
 
 lefred
 
-merry x-mas
