@@ -1,6 +1,6 @@
 Name:		banquise-server
 Version:	0.5
-Release:	9%{?dist}
+Release:	8%{?dist}
 License:	GPLv3
 Group:		System
 Summary:	Server of banquise package system
