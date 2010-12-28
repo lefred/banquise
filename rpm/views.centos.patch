@@ -1,11 +1,26 @@
---- web/views.py	2010-01-11 17:10:17.000000000 +0100
-+++ ../views.centos	2010-01-12 00:23:59.057541299 +0100
-@@ -1,7 +1,7 @@
+--- web/views.py	2010-12-28 14:54:35.693860997 +0100
++++ web/views.centos.py	2010-12-28 16:32:05.548860996 +0100
+@@ -2,7 +2,8 @@
  from datetime import datetime
  from datetime import timedelta
  import uuid
 -import json
 +import simplejson as json
++import time
  
  from django.shortcuts import render_to_response, get_object_or_404
  from django.http import HttpResponseRedirect, HttpResponse
+@@ -343,9 +344,11 @@
+     selected_date  = date.today()
+     form = HistoryForm()
+     if request.POST.get('date_available'): # If the form has been submitted...
+-        selected_date=datetime.strptime(request.POST.get('date_available'),"%Y-%m-%d")
++        selected_date=time.strptime(request.POST.get('date_available'),"%Y-%m-%d")
++        selected_date=datetime(*selected_date[0:6])
+     elif request.GET.get('date_available'): # If the form has been submitted...
+-        selected_date=datetime.strptime(request.GET.get('date_available'),"%Y-%m-%d")
++        selected_date=time.strptime(request.GET.get('date_available'),"%Y-%m-%d")
++        selected_date=datetime(*selected_date[0:6])
+     #    form = HistoryForm(request.POST) # A form bound to the POST data
+     selected_date1 =  selected_date + timedelta(days=1)
+     selected_date1 =  datetime(selected_date1.year, selected_date1.month, + selected_date1.day)

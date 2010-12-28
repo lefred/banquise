@@ -1,14 +1,6 @@
 --- web/views.py	2010-12-28 14:54:35.693860997 +0100
-+++ web/views.centos.py	2010-12-28 14:58:01.988860998 +0100
-@@ -2,7 +2,8 @@
- from datetime import datetime
- from datetime import timedelta
- import uuid
-+import time
- 
- from django.shortcuts import render_to_response, get_object_or_404
- from django.http import HttpResponseRedirect, HttpResponse
-@@ -17,7 +18,6 @@
++++ web/views.django11.py	2010-12-28 16:33:10.284861002 +0100
+@@ -17,7 +17,6 @@
  from django.contrib.auth import authenticate
  from django.contrib.auth.decorators import login_required
  from django.contrib.auth import logout
@@ -16,21 +8,7 @@
  
  
  supported_client=("0.5")
-@@ -343,9 +343,11 @@
-     selected_date  = date.today()
-     form = HistoryForm()
-     if request.POST.get('date_available'): # If the form has been submitted...
--        selected_date=datetime.strptime(request.POST.get('date_available'),"%Y-%m-%d")
-+        selected_date=time.strptime(request.POST.get('date_available'),"%Y-%m-%d")
-+        selected_date=datetime(*selected_date[0:6])
-     elif request.GET.get('date_available'): # If the form has been submitted...
--        selected_date=datetime.strptime(request.GET.get('date_available'),"%Y-%m-%d")
-+        selected_date=time.strptime(request.GET.get('date_available'),"%Y-%m-%d")
-+        selected_date=datetime(*selected_date[0:6])
-     #    form = HistoryForm(request.POST) # A form bound to the POST data
-     selected_date1 =  selected_date + timedelta(days=1)
-     selected_date1 =  datetime(selected_date1.year, selected_date1.month, + selected_date1.day)
-@@ -386,7 +388,6 @@
+@@ -386,7 +385,6 @@
  
  
  # REST methods
@@ -38,7 +16,7 @@
  def call_test(request):
      uuid = request.POST[u'uuid']
      version = request.POST[u'version']
-@@ -407,7 +408,6 @@
+@@ -407,7 +405,6 @@
              #no host found
              return HttpResponse("ERROR3")
  
@@ -46,7 +24,7 @@
  def call_set_release(request):
      uuid = request.POST[u'uuid']
      try:
-@@ -419,7 +419,6 @@
+@@ -419,7 +416,6 @@
          # can set the release
          return HttpResponse("ERROR4")
  
@@ -54,7 +32,7 @@
  def call_packs_done(request):
      uuid = request.POST[u'uuid']
      host = Host.objects.get(hash=uuid)
-@@ -464,7 +463,6 @@
+@@ -464,7 +460,6 @@
              servpack.save()
      return HttpResponse("Packages updated")
  
@@ -62,7 +40,7 @@
  def call_send_list(request):
      uuid = request.POST[u'uuid']
      packages = request.POST[u'packages']      
-@@ -497,7 +495,6 @@
+@@ -497,7 +492,6 @@
  
      return HttpResponse("Ok")
          
@@ -70,7 +48,7 @@
  def call_send_install(request):
      uuid = request.POST[u'uuid']
      host = Host.objects.get(hash=uuid)
-@@ -508,7 +505,6 @@
+@@ -508,7 +502,6 @@
      json_value = json.dumps(packages_install_list)
      return HttpResponse(json_value, mimetype="application/javascript") 
  
@@ -78,7 +56,7 @@
  def call_send_ask_update(request):
      uuid = request.POST[u'uuid']
      host = Host.objects.get(hash=uuid)
-@@ -519,7 +515,6 @@
+@@ -519,7 +512,6 @@
      json_value = json.dumps(packages_install_list)
      return HttpResponse(json_value, mimetype="application/javascript") 
  
@@ -86,7 +64,7 @@
  def call_send_changelog(request):
      pack_id = request.POST[u'pack_id']
      changelog = request.POST[u'changelog']
-@@ -534,7 +529,6 @@
+@@ -534,7 +526,6 @@
              change.save()
      return HttpResponse("changelog added")            
  
@@ -94,7 +72,7 @@
  def call_send_update(request):
      uuid = request.POST[u'uuid']
      host = Host.objects.get(hash=uuid)
-@@ -571,7 +565,6 @@
+@@ -571,7 +562,6 @@
              #packages_install_list.append("|")
      return HttpResponse(pack.pk) 
  
@@ -102,7 +80,7 @@
  def call_send_sync(request):
      uuid = request.POST[u'uuid']
      host = Host.objects.get(hash=uuid)
-@@ -626,7 +619,6 @@
+@@ -626,7 +616,6 @@
                  package.save()
      return HttpResponse("synced : %s updated, %s added, %s synced, %s deleted" % (tot_updated,tot_added,tot_synced,tot_deleted))
  
@@ -110,7 +88,7 @@
  def call_setup(request):
      # search it there is a contract on which we can attach the host
      license_tosearch = request.POST[u'license']
-@@ -661,19 +653,16 @@
+@@ -661,19 +650,16 @@
      #return HttpResponse(json_value, mimetype="application/javascript")
      return HttpResponse(host.hash)
  
@@ -130,11 +108,13 @@
  def parseMetaInfo(metainfo):
      metadata=json.loads(metainfo)
      if not isinstance(metadata,list):
-@@ -698,7 +687,6 @@
+@@ -697,8 +683,7 @@
+                         my_metainfo.description=meta[1][2]
                  my_metainfo.save()
      return True
-                 
+-                
 -@csrf_exempt
++
  def parseMetaBug(metabug,onerecord=False):
      # save the bug info            
      if onerecord:
