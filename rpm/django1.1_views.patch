@@ -4,8 +4,6 @@
  from datetime import datetime
  from datetime import timedelta
  import uuid
--import json
-+import simplejson as json
 +import time
  
  from django.shortcuts import render_to_response, get_object_or_404
