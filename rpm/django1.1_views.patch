@@ -1,9 +1,11 @@
---- web/views.py	2010-12-27 14:44:45.283197004 +0100
-+++ web/views.centos.py	2010-12-27 14:44:15.963197002 +0100
-@@ -3,6 +3,7 @@
+--- web/views.py	2010-12-28 14:54:35.693860997 +0100
++++ web/views.centos.py	2010-12-28 14:58:01.988860998 +0100
+@@ -2,7 +2,8 @@
+ from datetime import datetime
  from datetime import timedelta
  import uuid
- import json
+-import json
++import simplejson as json
 +import time
  
  from django.shortcuts import render_to_response, get_object_or_404
