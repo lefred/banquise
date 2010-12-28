@@ -1,6 +1,6 @@
 Name:		banquise-server
 Version:	0.5
-Release:	9%{?dist}
+Release:	8%{?dist}
 License:	GPLv3
 Group:		System
 Summary:	Server of banquise package system
@@ -53,6 +53,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec 28 2010 - Frederic Descamps <lefred@inuits.be> 0.5-8
+- version 0.5-8 draft of history package added 
 * Mon Nov 15 2010 - Frederic Descamps <lefred@inuits.be> 0.5-7
 - version 0.5-7 git version and django 1.1.x support
 * Thu Apr 15 2010 - Frederic Descamps <lefred@inuits.be> 0.5-6
