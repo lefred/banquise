@@ -155,9 +155,18 @@ def list_hosts(request, contract_id=""):
     else:
         hosts = Host.objects.all()
     #contracts = Contract.objects.all()
-
+    
+    host_invalid_contract=[]
+    for host in hosts:
+        valid_contract = Contract.objects.filter(start_date__lte=datetime.today(),
+                                          end_date__gte=datetime.today(), 
+                                          hosts=host.id)
+        if not valid_contract:
+            host_invalid_contract.append(host.id)
     t = loader.get_template('hosts.html')
-    c = RequestContext(request, _get_default_context({'hosts':hosts,'tab_host': True}))
+    c = RequestContext(request, _get_default_context({'hosts': hosts,
+                                                      'host_invalid_contract': host_invalid_contract, 
+                                                      'tab_host': True}))
 
     return HttpResponse(t.render(c))
 

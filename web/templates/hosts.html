@@ -16,6 +16,13 @@
         <td><a href='/web/list/packages/{{ host.id }}/'
         <img src='/media/images/icons/install.png' height='16' border='0'></a> 
         {{ host.packages_to_update }}</td>
+        <td>
+        {% for hostb in host_invalid_contract %}
+            {% if hostb == host.id %}
+                <img src='/media/images/icons/delete.png' height='16' border='0'>
+            {% endif %}
+        {% endfor %}
+        </td>
     </tr>
 {% endfor %}
 </table>
