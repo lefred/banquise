@@ -28,7 +28,7 @@ class Contract(models.Model):
     packages_to_update = property(fget=_packages_to_update)
 
     def __str__(self):
-        return " (" + str(self.start_date) + " -> " + str(self.end_date) + ")"
+        return " %s ( %s -> %s )" % (str(self.customer), str(self.start_date), str(self.end_date))
 
     class Meta:
         get_latest_by = 'end_date'
@@ -42,6 +42,7 @@ class Host(models.Model):
     packages_to_update = lambda x:  ServerPackages.objects.filter(host=x,package_installed=0,package_skipped=0).count()
 
     def __str__(self):
+        
         return self.name
 
 class MetaInfo(models.Model):

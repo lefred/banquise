@@ -1,5 +1,5 @@
 {% extends "index.html" %}
-{%load smart_if%}
+{% load smart_if %}
 {% block content %}
 <div id='hosts'>
 <table>
@@ -18,11 +18,19 @@
         <img src='/media/images/icons/install.png' height='16' border='0'></a> 
         {{ host.packages_to_update }}</td>
         <td>
+        <div id="img_host_{{ host.id}}">
         {% for hostb in host_invalid_contract %}
             {% if hostb == host.id %}
                 <img src='/media/images/icons/delete.png' height='16' border='0'>
+                <span onclick="Dajaxice.banquise.web.display_valid_contracts('Dajax.process',{'host_id':{{ host.id}}});">
+                <img src="/media/images/icons/add.png" height='16' border='0'></span>
             {% endif %}
         {% endfor %}
+        </div>
+        </td>
+    </tr>
+        <td colspan="5">
+            <div id="host_{{ host.id}}"></div>
         </td>
     </tr>
 {% endfor %}

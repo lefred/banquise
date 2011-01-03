@@ -223,6 +223,18 @@ a:hover {
 		border-bottom: 1px dashed #6d90c2;
 }
 
+#hosts_expand {
+	    font-size: 14px;
+		color: #6d90c2;
+		background-color: #b5d0d9;
+		border: 0px;
+}
+.hosts_expand {
+	    font-size: 12px;
+		color: #6d90c2;
+		background-color: #b5d0d9;
+}
+
 #packages {
         margin-left: 300px;
 }

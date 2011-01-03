@@ -1,5 +1,23 @@
 {% extends "index.html" %}
 {%load smart_if%}
+{% block head %}
+<head>
+         <title>Banquise</title>
+        <link rel="stylesheet" type="text/css" href="/media/css/banquise.css">
+        <link rel="stylesheet" type="text/css" href="/media/css/banquise/jquery-ui-1.7.2.custom.css" />
+        <script src="http://www.google.com/jsapi"></script>
+        <script type="text/javascript" src="/media/javascripts/jquery-1.3.2.js"></script>
+        <script type="text/javascript" src="/media/javascripts/ui/ui.core.js"></script>
+        <script type="text/javascript" src="/media/javascripts/ui/ui.datepicker.js"></script>
+        <script type="text/javascript">
+           $(function() {
+                $("#id_start_date").datepicker({ dateFormat: 'yy-mm-dd' });
+                $("#id_end_date").datepicker({ dateFormat: 'yy-mm-dd' });
+                $("#id_date_available").datepicker({ dateFormat: 'yy-mm-dd' });
+           });
+        </script>
+</head>
+{% endblock head %}
 {% block content %}
 <h2>{{ customer.name }} <img src='/media/images/icons/contract.png'>{{ customer.contract_set.all.count }}
 <img src='/media/images/icons/host.png'> {{ tot_hosts }} <a href="?action=add"><img src="/media/images/icons/add.png" title="add a new contract" border="0"></a></h2> 

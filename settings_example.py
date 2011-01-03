@@ -56,7 +56,7 @@ SECRET_KEY = '&%yy&uk9p=6_=qv4pnfijiz_=$c_rbc^y#1r-c=61-ykzlx4_5'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.load_template_source',
     'django.template.loaders.app_directories.load_template_source',
-#     'django.template.loaders.eggs.load_template_source',
+    'django.template.loaders.eggs.load_template_source',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -84,6 +84,12 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'south',
     'banquise.web',
+    'dajaxice',
+    'dajax',
 )
 
 LOGIN_URL='/banquise/accounts/login'
+
+DAJAXICE_MEDIA_PREFIX="dajax"
+#DAJAXICE_CACHE_CONTROL = 10 * 24 * 60 * 60
+DAJAXICE_DEBUG = False

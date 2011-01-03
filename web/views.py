@@ -19,7 +19,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.views.decorators.csrf import csrf_exempt
 
-
 supported_client=("0.5")
 
 def _get_default_context(dict_in):
