@@ -12,12 +12,12 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:	noarch
 Requires:	python, yum, Django, Django-south, MySQL-python, mod_python   
 %if 0%{?fedora} > 1
-Requires:       django-dajax python24-django-dajaxice
+Requires:       python27-django-dajax python27-django-dajaxice
 %else
 Patch0:         views.centos.patch
 Patch1:         django1.1_views.patch
 Requires:       python-uuid, python-json
-Requires:       python27-django-dajax python27-django-dajaxice
+Requires:       django-dajax python24-django-dajaxice
 %endif
 
 
