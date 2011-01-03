@@ -152,7 +152,7 @@ def list_hosts(request, contract_id=""):
     if contract_id.isdigit():
         hosts = Host.objects.filter(C_h_H=contract_id)
     else:
-        hosts = Host.objects.all()
+        hosts = Host.objects.all().order_by('name')
     #contracts = Contract.objects.all()
     
     host_invalid_contract=[]
