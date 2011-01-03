@@ -228,6 +228,10 @@ a:hover {
 		border-bottom: 0px solid #888888;
 }
 
+.hosts_not_valid {
+        background-color: #ff9d9d;
+}
+
 #packages {
         margin-left: 300px;
 }

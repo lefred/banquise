@@ -10,7 +10,12 @@
         <th># pack to update</th>
     </tr>
     {% for host in hosts %}
+    {% for hostb in host_invalid_contract %}
+    {% if hostb == host.id %}
+    <tr class='hosts_not_valid'>
+    {% else %}
     <tr>
+    {% endif %}
         <td>{{ host.name }}</td>
         <td>{{ host.ip }} </td>
         <td>{{ host.public_ip }} </td>
@@ -19,16 +24,14 @@
         {{ host.packages_to_update }}</td>
         <td>
         <div id="img_host_{{ host.id}}">
-        {% for hostb in host_invalid_contract %}
             {% if hostb == host.id %}
-                <img src='/media/images/icons/delete.png' height='16' border='0'>
                 <span onclick="Dajaxice.banquise.web.display_valid_contracts('Dajax.process',{'host_id':{{ host.id}}});">
                 <img src="/media/images/icons/add.png" height='16' border='0'></span>
             {% endif %}
-        {% endfor %}
         </div>
         </td>
     </tr>
+    {% endfor %}
     <tr id='hosts_expand'>
         <td colspan="5">
             <div id="host_{{ host.id}}"></div>
