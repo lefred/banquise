@@ -137,6 +137,69 @@
     </span>
 </div>
 
+<a name='skipped'><h5>Skipped this day: {{ packages_skipped.paginator.count }}</h5></a>
+{% regroup packages_skipped_list by host as packages_skipped_by_host %}
+
+{% for pack in packages_skipped_by_host %}        
+	{{ pack.grouper }} : 
+	{% for item in pack.list %}  
+		{% if forloop.last %}
+			{{ forloop.counter }}<br>
+		{% endif %}
+	{% endfor %}
+{% endfor %}
+
+<table>
+    <tr>
+        <th>host</th>
+        <th>name</th>
+        <th>architecture</th>
+        <th>version</th>
+        <th>release</th>
+        <th></th>
+    </tr>
+    
+    {% for pack in packages_skipped.object_list %}
+        <tr class='packagestoinstall'> 
+        <td>{{ pack.host }}
+        </td>
+        <td>{{ pack.package.name }}
+        </td>
+        <td>{{ pack.package.arch }}</td>
+        <td>{{ pack.package.version }}</td>
+        <td>{{ pack.package.release }}</td>
+        <td align='center'>
+        <a href='/web/list/changelog/{{ pack.package.id }}/'>
+        <img src='/media/images/icons/changelog.png' title='changelog' border='0'>
+        </a>
+        {% if pack.package.metainfo.id %}
+        <a href='/web/list/metainfo/{{ pack.package.id }}/{{ pack.package.metainfo.id }}/'>
+        <img src='/media/images/icons/{{ pack.package.type }}.png' title='{{ pack.package.metainfo.updateid }} : {{ pack.package.type }}' border='0'></td>
+        </a>
+        {% else %}
+        <img src='/media/images/icons/{{ pack.package.type }}.png' title='{{ pack.package.metainfo.updateid }} : {{ pack.package.type }}' border='0'></td>
+        {% endif %}
+    </tr>
+   {% endfor %}
+</table>
+<div class="pagination">
+    <span class="step-links">
+        {% if packages_skipped.has_previous %}
+            <a href="?date_available={{ selected_date|date:"Y-m-d" }}&page_skip={{ packages_skipped.previous_page_number }}#skipped">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ packages_skipped.number }} of {{ packages_skipped.paginator.num_pages }}.
+        </span>
+
+        {% if packages_skipped.has_next %}
+            <a href="?date_available={{ selected_date|date:"Y-m-d" }}&page_skip={{ packages_skipped.next_page_number }}#skipped">next</a>
+        {% endif %}
+    </span>
+</div>
+
+
+
 </div>
 
 {% endblock %}

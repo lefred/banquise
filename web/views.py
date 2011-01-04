@@ -180,7 +180,7 @@ def list_packages(request, host_id=""):
     #this doesn't work yet
     host = get_object_or_404(Host,pk=host_id)
     packages = ServerPackages.objects.filter(host=host,date_installed__isnull=True,package_installed=0,package_skipped=0).order_by('package__name')
-    packages_installed = ServerPackages.objects.filter(host=host,package_installed=True).order_by('package__name')
+    packages_installed = ServerPackages.objects.filter(host=host,package_installed=True).order_by('-date_available')
 
     if request.method=='POST':
         to_install = request.POST.getlist('to_install')
@@ -230,8 +230,11 @@ def list_packages(request, host_id=""):
         packages_installed_list = paginator_history.page(paginator_history.num_pages)
 
     t = loader.get_template('packages.html')
-    c = RequestContext(request, _get_default_context({'host':host,'packages':packages_list,'packages_installed':packages_installed_list,
-                       'tab_host': True,}))
+    c = RequestContext(request,
+                       _get_default_context({'host':host,
+                                             'packages':packages_list,
+                                             'packages_installed':packages_installed_list,
+                                             'tab_host': True,}))
 
     return HttpResponse(t.render(c))
 
@@ -345,9 +348,10 @@ def list_packages_history(request, host_id=""):
     :param request: :class:`django.http.HttpRequest` given by the framework
     :type request: :class:`django.http.Request`
     """
+    
+    if host_id.isdigit():
+        host = Host.objects.get(id=host_id)
 
-    #this doesn't work yet
-    #host = get_object_or_404(Host,pk=host_id)
     selected_date  = date.today()
     form = HistoryForm()
     if request.POST.get('date_available'): # If the form has been submitted...
@@ -358,8 +362,14 @@ def list_packages_history(request, host_id=""):
     selected_date1 =  selected_date + timedelta(days=1)
     selected_date1 =  datetime(selected_date1.year, selected_date1.month, + selected_date1.day)
 
-    packages_available = ServerPackages.objects.filter(date_available__gte=selected_date,date_available__lt=selected_date1).order_by('package__name')
-    packages_installed = ServerPackages.objects.filter(date_installed__gte=selected_date,date_installed__lt=selected_date1).order_by('host','package__name')
+    if host_id.isdigit():
+        packages_available = ServerPackages.objects.filter(host=host,date_available__gte=selected_date,date_available__lt=selected_date1).order_by('package__name')
+        packages_installed = ServerPackages.objects.filter(host=host,date_installed__gte=selected_date,date_installed__lt=selected_date1,package_skipped=0).order_by('host','package__name')
+        packages_skipped = ServerPackages.objects.filter(host=host,date_installed__gte=selected_date,date_installed__lt=selected_date1,package_skipped=1).order_by('host','package__name')
+    else:
+        packages_available = ServerPackages.objects.filter(date_available__gte=selected_date,date_available__lt=selected_date1).order_by('package__name')
+        packages_installed = ServerPackages.objects.filter(date_installed__gte=selected_date,date_installed__lt=selected_date1,package_skipped=0).order_by('host','package__name')
+        packages_skipped = ServerPackages.objects.filter(date_installed__gte=selected_date,date_installed__lt=selected_date1,package_skipped=1).order_by('host','package__name')
     
     paginator = Paginator(packages_available, 25)
     try:
@@ -382,10 +392,23 @@ def list_packages_history(request, host_id=""):
         packages_inst_list = paginator.page(paginator_inst.num_pages)
 
 
+    paginator_skip = Paginator(packages_skipped, 25)
+    try:
+        page_skip = int(request.GET.get('page_skip', '1'))
+    except ValueError:
+        page_skip = 1
+    try:
+        packages_skip_list = paginator_skip.page(page_skip)
+    except (EmptyPage, InvalidPage):
+        packages_skip_list = paginator.page(paginator_skip.num_pages)
+
+
     t = loader.get_template('packagesHistory.html')
     c = RequestContext(request, _get_default_context({'packages_available':packages_list,
                        'packages_installed':packages_inst_list,
                        'packages_installed_list':packages_installed,
+                       'packages_skipped':packages_skip_list,
+                       'packages_skipped_list':packages_skipped,
                        'selected_date': selected_date,
                        'form': form,
                        'tab_host': True,}))
