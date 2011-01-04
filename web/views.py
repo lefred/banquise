@@ -150,7 +150,7 @@ def list_hosts(request, contract_id=""):
     :type request: :class:`django.http.Request`
     """
     if contract_id.isdigit():
-        hosts = Host.objects.filter(C_h_H=contract_id)
+        hosts = Host.objects.filter(C_h_H=contract_id).order_by('name')
     else:
         hosts = Host.objects.all().order_by('name')
     #contracts = Contract.objects.all()
