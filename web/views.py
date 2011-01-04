@@ -151,8 +151,10 @@ def list_hosts(request, contract_id=""):
     """
     if contract_id.isdigit():
         hosts = Host.objects.filter(C_h_H=contract_id).order_by('name')
+        full_hosts=False
     else:
         hosts = Host.objects.all().order_by('name')
+        full_hosts=True
     #contracts = Contract.objects.all()
     
     host_invalid_contract=[]
@@ -165,6 +167,7 @@ def list_hosts(request, contract_id=""):
     t = loader.get_template('hosts.html')
     c = RequestContext(request, _get_default_context({'hosts': hosts,
                                                       'host_invalid_contract': host_invalid_contract, 
+                                                      'full_hosts': full_hosts,
                                                       'tab_host': True}))
 
     return HttpResponse(t.render(c))

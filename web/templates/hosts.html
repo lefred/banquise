@@ -2,6 +2,9 @@
 {% load smart_if %}
 {% block content %}
 <div id='hosts'>
+{% if full_hosts %}
+<a href='/web/list/packages_history/'><img src='/media/images/icons/cal.png' align='right' border='0'></a>
+{% endif %}
 <table>
     <tr>
         <th>Name</th>
